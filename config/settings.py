@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+#MEDIA_ROOT='some/path'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
