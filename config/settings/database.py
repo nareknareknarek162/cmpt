@@ -2,13 +2,8 @@
 Django settings for models_app.
 
 """
-import os
-import environ
 
-from config.settings.settings import BASE_DIR
-
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+from config.settings.django import env
 
 DATABASES = {
     "default": {
@@ -20,8 +15,3 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "uploads/")
-MEDIA_URL = "/uploads/"
-
-AUTH_USER_MODEL = "models_app.User"
