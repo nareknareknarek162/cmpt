@@ -1,13 +1,18 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class User(models.Model):
-    GENDERS = [("M", "Мужской"), ("F", "Женский")]
-    name = models.CharField(max_length=30)
-    surname = models.CharField(max_length=30)
-    birth_date = models.DateTimeField(null=True)
-    gender = models.CharField(max_length=1, choices=GENDERS)
-    password = models.CharField(max_length=50)
+class User(AbstractUser):
+    birth_date = models.DateTimeField(
+        blank=True, null=True, verbose_name="Дата рождения"
+    )
+    gender = models.CharField(
+        max_length=1,
+        choices=[("M", "Мужской"), ("F", "Женский")],
+        blank=False,
+        null=False,
+        verbose_name="Пол",
+    )
 
     class Meta:
         db_table = "users"
