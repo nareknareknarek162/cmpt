@@ -134,21 +134,30 @@ MEDIA_URL = "/uploads/"
 
 AUTH_USER_MODEL = "models_app.User"
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "file": {
-            "level": "DEBUG",
+        "general_logs": {
             "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/debug.log"),
+            "filename": os.path.join(BASE_DIR, "logs/general_log.log"),
+            "mode": "w",
+            "level": "DEBUG",
+        },
+        "db_logs": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/db_log.log"),
+            "mode": "w",
+            "level": "DEBUG",
         },
     },
     "loggers": {
-        "django": {
-            "handlers": ["file"],
+        "django": {"handlers": ["general_logs"], "level": "INFO", "propagate": True},
+        "django.db.backends": {
+            "handlers": ["db_logs"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
     },
 }
