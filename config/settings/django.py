@@ -34,6 +34,7 @@ DEBUG = env("DEBUG", cast=bool, default=True)
 
 ALLOWED_HOSTS: list[str] = []
 
+CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]
 # Application definition
 
 
@@ -44,10 +45,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "request_id",
+    "corsheaders",
     "models_app",
+    "mysite",
 ]
 
 MIDDLEWARE = [
+    "request_id.middleware.RequestIdMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -133,31 +139,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "uploads/")
 MEDIA_URL = "/uploads/"
 
 AUTH_USER_MODEL = "models_app.User"
-
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "general_logs": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/general_log.log"),
-            "mode": "w",
-            "level": "DEBUG",
-        },
-        "db_logs": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/db_log.log"),
-            "mode": "w",
-            "level": "DEBUG",
-        },
-    },
-    "loggers": {
-        "django": {"handlers": ["general_logs"], "level": "INFO", "propagate": True},
-        "django.db.backends": {
-            "handlers": ["db_logs"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-}

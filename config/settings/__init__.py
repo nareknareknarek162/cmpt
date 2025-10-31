@@ -1,6 +1,3 @@
 from split_settings.tools import include
 
-include(
-    "django.py",
-    "database.py",
-)
+include("django.py", "database.py", "logging.py")

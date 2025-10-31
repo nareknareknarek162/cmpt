@@ -1,0 +1,19 @@
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect, render
+
+
+def index(request):
+    return render(request, "index.html")
+
+
+def authorisation_page(request):
+    return render(request, "authorisation.html")
+
+
+def login_view(request):
+    username = request.POST["username"]
+    password = request.POST["password"]
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect("index")
