@@ -14,6 +14,10 @@
     <div class="d-flex align-items-center">
       {% if user.is_authenticated %}
         <span class="me-3 text-success fw-semibold">Logged in</span>
+      <form action="/logout/" method="POST">
+        <button type="submit" class="btn btn-primary w-100">Выйти</button>
+        {% csrf_token %}
+      </form>
       {% else %}
         <span class="me-3 text-secondary">Not logged in</span>
         <a href="{% url 'auth' %}" class="btn btn-primary btn-sm">Войти</a>

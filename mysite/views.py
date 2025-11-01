@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 
 
@@ -17,3 +17,8 @@ def login_view(request):
     if user is not None:
         login(request, user)
         return redirect("index")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("index")
