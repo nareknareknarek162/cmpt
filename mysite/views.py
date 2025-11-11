@@ -1,9 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 
+from models_app.models import Photo
+
 
 def index(request):
-    return render(request, "index.html")
+    photos = Photo.objects.all()
+    return render(request, "index.html", {"photos": photos})
 
 
 def authorisation_page(request):
