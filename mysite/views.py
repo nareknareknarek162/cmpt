@@ -1,50 +1,62 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
+from django.views.generic import ListView, View
 
 from models_app.models import Photo, User
 
 
-def index(request):
-    photos = Photo.objects.all()
-    return render(request, "index.html", {"photos": photos})
+class IndexView(ListView):
+    model = Photo
+    # paginate_by = 6
+    template_name = "index.html"
+    context_object_name = "photos"
 
 
-def authorisation_page(request):
-    return render(request, "authorisation.html")
+class AuthView(LoginView):
+    template_name = "authorisation.html"
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("index")
+        else:
+            return render(
+                request, self.template_name, {"error": "Неверный логин или пароль"}
+            )
 
 
-def login_view(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect("index")
-    else:
-        return render(
-            request, "authorisation.html", {"error": "Неверный логин или пароль"}
+class Logout(LogoutView):
+    pass
+
+
+class RegistrationView(View):  # Formview?
+    template_name = "registrate.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        email = request.POST["email"]
+        birth_date = request.POST["birth_date"]
+        gender = request.POST["gender"]
+        user = User(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            birth_date=birth_date,
+            is_staff=False,
+            is_active=True,
+            gender=gender,
         )
-
-
-def logout_view(request):
-    logout(request)
-    return redirect("index")
-
-
-def registration_view(request):
-    return render(request, "registrate.html")
-
-
-def registrate_view(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    first_name = request.POST["first_name"]
-    last_name = request.POST["last_name"]
-    email = request.POST["email"]
-    birth_date = request.POST["birth_date"]
-    gender = request.POST["gender"]
-    user = User(username=username, first_name=first_name, last_name=last_name, email=email, birth_date=birth_date,
-                is_staff=False, is_active=True, gender=gender)
-    user.set_password(password)
-    user.save()
-    return redirect("index")
+        user.set_password(password)
+        user.save()
+        return redirect("index")

@@ -14,7 +14,7 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 
-  <form action="/login/" method="POST">
+  <form action="/auth/" method="POST">
       {% csrf_token %}
     <div class="mb-3">
       <label class="form-label">Имя пользователя</label>
