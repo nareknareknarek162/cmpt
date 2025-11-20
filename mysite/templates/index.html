@@ -32,7 +32,9 @@
   <div class="row">
   {% for photo in photos %}
     <div class="col-6 col-md-4 mb-3">
-      <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
+      <a href="{% url 'details' photo.pk %}">
+        <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
+      </a>
     </div>
   {% endfor %}
 </div>

@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
-from django.views.generic import ListView, View
+from django.views.generic import DetailView, ListView, View
 
-from models_app.models import Photo, User
+from models_app.models import Like, Photo, User
 
 
 class IndexView(ListView):
@@ -11,6 +11,28 @@ class IndexView(ListView):
     # paginate_by = 6
     template_name = "index.html"
     context_object_name = "photos"
+
+
+class DetailedPhotoView(DetailView):
+    model = Photo
+    template_name = "details.html"
+    context_object_name = "photo"
+
+    def post(self, request, *args, **kwargs):
+        self.photo = self.get_object()
+        user = request.user
+
+        if (
+            not user.is_authenticated
+        ):  # как запомниать незарегистрированных пользователей?
+            return redirect("auth")
+
+        already_liked = Like.objects.filter(user=user, photo=self.photo).exists()
+
+        if not already_liked:
+            Like.objects.create(user=user, photo=self.photo)
+
+        return redirect("details", pk=self.photo.pk)
 
 
 class AuthView(LoginView):
