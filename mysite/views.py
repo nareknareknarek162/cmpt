@@ -22,15 +22,15 @@ class DetailedPhotoView(DetailView):
         self.photo = self.get_object()
         user = request.user
 
-        if (
-            not user.is_authenticated
-        ):  # как запомниать незарегистрированных пользователей?
+        if not user.is_authenticated:
             return redirect("auth")
 
         already_liked = Like.objects.filter(user=user, photo=self.photo).exists()
 
         if not already_liked:
             Like.objects.create(user=user, photo=self.photo)
+        else:
+            Like.objects.filter(user=user, photo=self.photo).delete()
 
         return redirect("details", pk=self.photo.pk)
 
@@ -44,7 +44,7 @@ class AuthView(LoginView):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("index")
+            return redirect("account")
         else:
             return render(
                 request, self.template_name, {"error": "Неверный логин или пароль"}
@@ -55,7 +55,7 @@ class Logout(LogoutView):
     pass
 
 
-class RegistrationView(View):  # Formview?
+class RegistrationView(View):
     template_name = "registrate.html"
 
     def get(self, request):
@@ -81,4 +81,14 @@ class RegistrationView(View):  # Formview?
         )
         user.set_password(password)
         user.save()
-        return redirect("index")
+        return redirect("account")
+
+
+class AccountView(ListView):
+    model = Photo
+    # paginate_by = 6
+    template_name = "account.html"
+    context_object_name = "photos"
+
+    def get_queryset(self):
+        return Photo.objects.filter(author=self.request.user)

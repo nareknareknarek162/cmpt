@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title></title>
@@ -10,6 +10,7 @@
 <img src="{{ photo.image.url }}" class="rounded mx-auto d-block">
 <p class="text-center">{{ photo.description }}</p>
 <p class="text-center">Автор: {{photo.author}}</p>
+<p class="text-center">Загружено: {{photo.publication_date}}</p>
 <br>
 <form method="POST" class="text-center mt-3">
     {% csrf_token %}
