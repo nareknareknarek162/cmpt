@@ -13,13 +13,14 @@
     <a class="navbar-brand" href="#">competition</a>
     <div class="d-flex align-items-center">
       {% if user.is_authenticated %}
-      <span class="me-3 text-success fw-semibold">Logged in</span>
       <form action="/logout/" method="POST">
-        <button type="submit" class="btn btn-primary w-100">Выйти</button>
+        <button type="submit" class="btn btn-danger w-100">Выйти</button>
         {% csrf_token %}
       </form>
+      <a href="/account" class="ms-2">
+        <button class="btn btn-primary w-100">Личный кабинет</button>
+      </a>
       {% else %}
-        <span class="me-3 text-secondary">Not logged in</span>
         <a href="{% url 'auth' %}" class="btn btn-primary btn-sm">Войти</a>
         <a href="{% url 'registration' %}" class="btn btn-secondary btn-sm">Зарегистрироваться</a>
       {% endif %}

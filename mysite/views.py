@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
-from django.views.generic import DetailView, ListView, View
+from django.views.generic import CreateView, DetailView, ListView, View
 
 from models_app.models import Like, Photo, User
 
@@ -18,6 +18,13 @@ class DetailedPhotoView(DetailView):
     template_name = "details.html"
     context_object_name = "photo"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_liked"] = Like.objects.filter(
+            user=self.request.user, photo=self.get_object()
+        ).exists()
+        return context
+
     def post(self, request, *args, **kwargs):
         self.photo = self.get_object()
         user = request.user
@@ -25,11 +32,9 @@ class DetailedPhotoView(DetailView):
         if not user.is_authenticated:
             return redirect("auth")
 
-        already_liked = Like.objects.filter(user=user, photo=self.photo).exists()
+        obj, created = Like.objects.get_or_create(user=user, photo=self.photo)
 
-        if not already_liked:
-            Like.objects.create(user=user, photo=self.photo)
-        else:
+        if not created:
             Like.objects.filter(user=user, photo=self.photo).delete()
 
         return redirect("details", pk=self.photo.pk)
@@ -62,24 +67,17 @@ class RegistrationView(View):
         return render(request, self.template_name)
 
     def post(self, request):
-        username = request.POST["username"]
-        password = request.POST["password"]
-        first_name = request.POST["first_name"]
-        last_name = request.POST["last_name"]
-        email = request.POST["email"]
-        birth_date = request.POST["birth_date"]
-        gender = request.POST["gender"]
         user = User(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            birth_date=birth_date,
+            username=request.POST["username"],
+            first_name=request.POST["first_name"],
+            last_name=request.POST["last_name"],
+            email=request.POST["email"],
+            birth_date=request.POST["birth_date"],
             is_staff=False,
             is_active=True,
-            gender=gender,
+            gender=request.POST["gender"],
         )
-        user.set_password(password)
+        user.set_password(request.POST["password"])
         user.save()
         return redirect("account")
 
@@ -92,3 +90,10 @@ class AccountView(ListView):
 
     def get_queryset(self):
         return Photo.objects.filter(author=self.request.user)
+
+
+class AddPhotoView(CreateView):
+    model = Photo
+    fields = ["image", "description"]
+    template_name = "add_photo.html"
+    success_url = "/account"
