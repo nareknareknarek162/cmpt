@@ -9,7 +9,7 @@ from models_app.models import Like, Photo, User
 
 class IndexView(ListView):
     model = Photo
-    # paginate_by = 6
+    paginate_by = 6
     template_name = "index.html"
     context_object_name = "photos"
 

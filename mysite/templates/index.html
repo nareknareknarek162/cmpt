@@ -17,12 +17,16 @@
         <button type="submit" class="btn btn-danger w-100">Выйти</button>
         {% csrf_token %}
       </form>
-      <a href="/account" class="ms-2">
+      <a href="{% url 'account' %}" class="ms-2">
         <button class="btn btn-primary w-100">Личный кабинет</button>
       </a>
       {% else %}
-        <a href="{% url 'auth' %}" class="btn btn-primary btn-sm">Войти</a>
-        <a href="{% url 'registration' %}" class="btn btn-secondary btn-sm">Зарегистрироваться</a>
+        <a href="{% url 'auth' %}">
+            <button class="btn btn-primary w-100">Войти</button>
+        </a>
+        <a href="{% url 'registration' %}" class="ms-2">
+            <button class="btn btn-secondary w-100">Зарегистрироваться</button>
+        </a>
       {% endif %}
     </div>
   </div>
@@ -31,7 +35,7 @@
 <div class="container mt-5">
   <h1>Главная страница</h1>
   <div class="row">
-  {% for photo in photos %}
+  {% for photo in page_obj %}
     <div class="col-6 col-md-4 mb-3">
       <a href="{% url 'details' photo.pk %}">
         <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
@@ -40,7 +44,23 @@
   {% endfor %}
 </div>
 </div>
+<div class="text-center">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        {% endif %}
 
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 <footer class="bg-dark text-white text-center py-3 fixed-bottom">
     © 2025 Competition.org
 </footer>
