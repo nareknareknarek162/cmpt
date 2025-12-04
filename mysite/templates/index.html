@@ -10,22 +10,25 @@
 
 <nav class="navbar navbar-light bg-light px-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">competition</a>
+    <a class="navbar-brand" href="#">Competition</a>
     <div class="d-flex align-items-center">
       {% if user.is_authenticated %}
-      <form action="/logout/" method="POST">
-        <button type="submit" class="btn btn-danger w-100">Выйти</button>
-        {% csrf_token %}
-      </form>
-      <a href="{% url 'account' %}" class="ms-2">
-        <button class="btn btn-primary w-100">Личный кабинет</button>
-      </a>
-      {% else %}
-        <a href="{% url 'auth' %}">
-            <button class="btn btn-primary w-100">Войти</button>
+        <form action="/logout/" method="POST" class="me-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Выйти</button>
+        </form>
+        <a href="{% url 'account' %}" class="me-3">
+          <button class="btn btn-primary">Личный кабинет</button>
         </a>
-        <a href="{% url 'registration' %}" class="ms-2">
-            <button class="btn btn-secondary w-100">Зарегистрироваться</button>
+        <div class="border-start ps-3 fs-5 text-success">
+          {{ user.username }}
+        </div>
+      {% else %}
+        <a href="{% url 'auth' %}" class="me-2">
+          <button class="btn btn-primary">Войти</button>
+        </a>
+        <a href="{% url 'registration' %}">
+          <button class="btn btn-secondary">Зарегистрироваться</button>
         </a>
       {% endif %}
     </div>
@@ -44,6 +47,8 @@
   {% endfor %}
 </div>
 </div>
+
+
 <div class="text-center">
     <span class="step-links">
         {% if page_obj.has_previous %}

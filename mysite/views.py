@@ -1,10 +1,10 @@
-from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView, DetailView, ListView, View
 
 from models_app.models import Like, Photo, User
+from mysite.forms.photo import PhotoForm
 
 
 class IndexView(ListView):
@@ -93,31 +93,6 @@ class AccountView(ListView):
         return Photo.objects.filter(author=self.request.user)
 
 
-class PhotoForm(forms.ModelForm):
-    class Meta:
-        model = Photo
-        fields = ["image", "description"]
-        widgets = {
-            "description": forms.Textarea(attrs={"rows": 4, "class": "form-control"})
-        }
-
-    def clean_description(self):
-        value = self.cleaned_data.get("description", "")
-
-        if not len(value):
-            raise forms.ValidationError("Добавьте описание")
-
-        return value
-
-    def clean_image(self):
-        image = self.cleaned_data.get("image")
-
-        if not image:
-            raise forms.ValidationError("Добавьте фото.")
-
-        return image
-
-
 class AddPhotoView(CreateView):
     model = Photo
     form_class = PhotoForm
@@ -126,4 +101,5 @@ class AddPhotoView(CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        print(form.instance)
         return super().form_valid(form)
