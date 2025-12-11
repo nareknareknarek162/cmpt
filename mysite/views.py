@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView, DetailView, ListView, View
 
-from models_app.models import Like, Photo, User
+from models_app.models import Comment, Like, Photo, User
 from mysite.forms.photo import PhotoForm
 
 
@@ -24,21 +24,30 @@ class DetailedPhotoView(DetailView):
         context["is_liked"] = Like.objects.filter(
             user=self.request.user, photo=self.get_object()
         ).exists()
+        context["comments"] = Comment.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):
-        self.photo = self.get_object()
         user = request.user
 
-        if not user.is_authenticated:
-            return redirect("auth")
+        if user.is_authenticated:
+            self.photo = self.get_object()
+            if "comment_text" in request.POST:
+                comment_text = request.POST["comment_text"]
+                comment = Comment(author=user, photo=self.photo, text=comment_text)
+                comment.save()
 
-        obj, created = Like.objects.get_or_create(user=user, photo=self.photo)
+            if "like" in request.POST:
+                if not user.is_authenticated:
+                    return redirect("auth")
 
-        if not created:
-            Like.objects.filter(user=user, photo=self.photo).delete()
+                obj, created = Like.objects.get_or_create(user=user, photo=self.photo)
 
-        return redirect("details", pk=self.photo.pk)
+                if not created:
+                    Like.objects.filter(user=user, photo=self.photo).delete()
+
+            return redirect("details", pk=self.photo.pk)
+        return redirect("auth")
 
 
 class AuthView(LoginView):
@@ -101,5 +110,4 @@ class AddPhotoView(CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        print(form.instance)
         return super().form_valid(form)
