@@ -15,7 +15,7 @@ class DetailedPhotoView(DetailView):
         context["is_liked"] = Like.objects.filter(
             user=self.request.user, photo=self.get_object()
         ).exists()
-        context["comments"] = Comment.objects.all()
+        context["comments"] = Comment.objects.filter(photo=self.get_object())
         context["has_commented"] = Comment.objects.filter(
             author=self.request.user, photo=self.get_object()
         ).exists()
