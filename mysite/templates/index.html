@@ -8,49 +8,85 @@
 <body>
 
 <nav class="navbar navbar-light bg-light px-3">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Competition</a>
-    <div class="d-flex align-items-center">
-      {% if user.is_authenticated %}
-        <form action="/logout/" method="POST" class="me-2">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger">Выйти</button>
-        </form>
-        <a href="{% url 'account' %}" class="me-3">
-          <button class="btn btn-primary">Личный кабинет</button>
-        </a>
-        <div class="border-start ps-3 fs-5 text-success">
-          {{ user.username }}
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Competition</a>
+        <div class="d-flex align-items-center">
+            {% if user.is_authenticated %}
+            <form action="/logout/" method="POST" class="me-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Выйти</button>
+            </form>
+            <a href="{% url 'account' %}" class="me-3">
+                <button class="btn btn-primary">Личный кабинет</button>
+            </a>
+            <div class="border-start ps-3 fs-5 text-success">
+                {{ user.username }}
+            </div>
+            {% else %}
+            <a href="{% url 'auth' %}" class="me-2">
+                <button class="btn btn-primary">Войти</button>
+            </a>
+            <a href="{% url 'registration' %}">
+                <button class="btn btn-secondary">Зарегистрироваться</button>
+            </a>
+            {% endif %}
         </div>
-      {% else %}
-        <a href="{% url 'auth' %}" class="me-2">
-          <button class="btn btn-primary">Войти</button>
-        </a>
-        <a href="{% url 'registration' %}">
-          <button class="btn btn-secondary">Зарегистрироваться</button>
-        </a>
-      {% endif %}
     </div>
-  </div>
 </nav>
 
 <div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-start">
+    <div class="d-flex justify-content-between align-items-start">
 
-  <!-- Фото -->
-  <div class="flex-grow-1 pe-4">
-    <h1 class="pb-3">Конкурс</h1>
-    <div class="row">
-      {% for photo in page_obj %}
-        <div class="col-6 col-md-4 mb-3">
-          <a href="{% url 'details' photo.pk %}">
-            <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
-          </a>
+        <!-- Фото -->
+        <div class="flex-grow-1 pe-4">
+            <h1 class="pb-3">Конкурс</h1>
+            <div class="row">
+                {% for photo in page_obj %}
+                <div class="col-6 col-md-4 mb-3">
+                    <a href="{% url 'details' photo.pk %}">
+                        <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-      {% endfor %}
-    </div>
-  </div>
 
+        <!--Сортировка -->
+        <div class="ms-3">
+            <form method="GET" action="{% url 'index' %}">
+                {% csrf_token %}
+                <fieldset>
+                    <legend>Отсортировать по:</legend>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="sort" value="date" checked/>
+                            Дате
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="sort" value="likes"/>
+                            Лайкам
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="sort" value="comment"/>
+                            Комментариям
+                        </label>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary w-100">Применить</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Пагинация -->
 <div class="text-center">
     <span class="step-links">
         {% if page_obj.has_previous %}
