@@ -12,7 +12,7 @@
         <a class="navbar-brand" href="#">Competition</a>
         <div class="d-flex align-items-center">
             {% if user.is_authenticated %}
-            <form action="/logout/" method="POST" class="me-2">
+            <form action="{% url 'logout' %}" method="POST" class="me-2">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Выйти</button>
             </form>
@@ -44,15 +44,16 @@
                 {% for photo in page_obj %}
                 <div class="col-6 col-md-4 mb-3">
                     <a href="{% url 'details' photo.pk %}">
-                        <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
+                        <img src="{{ photo.image.url }}" title="{{photo.description}}" class="img-fluid rounded"
+                             style="max-width:200px;">
                     </a>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!--Сортировка -->
-        <div class="ms-3">
+        <div class="ms-3 d-flex flex-column">
+            <!-- Сортировка -->
             <form method="GET" action="{% url 'index' %}">
                 {% csrf_token %}
                 <fieldset>
