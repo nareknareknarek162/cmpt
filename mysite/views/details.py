@@ -15,7 +15,13 @@ class DetailedPhotoView(DetailView):
         context["is_liked"] = Like.objects.filter(
             user=self.request.user, photo=self.get_object()
         ).exists()
+
         context["comments"] = Comment.objects.filter(photo=self.get_object())
+        context["users_comment"] = Comment.objects.filter(
+            author=self.request.user, photo=self.get_object()
+        ).first()
+
+        context["editing"] = self.request.GET.get("edit") == "1"
         context["has_commented"] = Comment.objects.filter(
             author=self.request.user, photo=self.get_object()
         ).exists()
@@ -28,8 +34,10 @@ class DetailedPhotoView(DetailView):
             if "comment" in request.POST:
                 action = request.POST["comment"]
 
-                if action == "edit":
-                    pass
+                if action == "update":
+                    Comment.objects.filter(author=user, photo=self.get_object()).update(
+                        text=request.POST["comment_text"]
+                    )
 
                 elif action == "save":
                     comment_text = request.POST["comment_text"]

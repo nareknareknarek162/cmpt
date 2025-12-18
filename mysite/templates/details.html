@@ -56,10 +56,14 @@
         <div>
             <form method="POST">
                 {% csrf_token %}
-                {% if has_commented %}
+                {% if editing %}
+                <textarea id="text_input_update" name="comment_text" rows="5" cols="80">{{users_comment.text}}</textarea>
+                <button id="update_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
+                        value="update">Сохранить</button>
+                {% elif has_commented %}
                 <div class="d-grid gap-2 d-md-block">
                     <button class="btn btn-secondary" type="submit" name="comment" value="delete">Удалить</button>
-                    <button class="btn btn-danger" type="submit" name="comment" value="edit">Редактировать</button>
+                    <a href="?edit=1" class="btn btn-danger">Редактировать</a>
                 </div>
                 {% else %}
                 <textarea id="text_input" name="comment_text" rows="5" cols="80"></textarea>
@@ -83,12 +87,23 @@
 </div>
 <script>
     const input = document.getElementById('text_input');
-    const btn = document.getElementById('send_btn');
+    const input_update = document.getElementById('text_input_update');
+    const btn_send = document.getElementById('send_btn');
+    const btn_update = document.getElementById('update_btn');
 
-    input.addEventListener('input', () => {
-        const hasText = input.value.trim().length > 0;
-        btn.disabled = !hasText;
-    });
+    if (input) {
+        input.addEventListener('input', () => {
+            const hasText = input.value.trim().length > 0;
+            btn_send.disabled = !hasText;
+        });
+    }
+
+    if (input_update) {
+        input_update.addEventListener('input', () => {
+            const hasText = input_update.value.trim().length > 0;
+            btn_update.disabled = !hasText;
+        });
+    }
 </script>
 </body>
 </html>
