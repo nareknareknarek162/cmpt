@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.views.generic import ListView
 
 from models_app.models import Photo
@@ -12,31 +12,28 @@ class IndexView(ListView):
 
     def get_queryset(self):
         query = super().get_queryset()
+
+        # фильтр
+        if "search" in self.request.GET:
+            search = self.request.GET.get("search")
+
+            query = query.filter(
+                Q(description__icontains=search) | Q(author__username__icontains=search)
+            )
+
         # сортировка
         if "sort" in self.request.GET:
             sorting_feature = self.request.GET.get("sort")
 
             if sorting_feature == "likes":
-                return query.annotate(likes_count=Count("like")).order_by(
+                query = query.annotate(likes_count=Count("like")).order_by(
                     "-likes_count"
                 )
-            if sorting_feature == "comments":
-                return query.annotate(comments_count=Count("comment")).order_by(
+            elif sorting_feature == "comments":
+                query = query.annotate(comments_count=Count("comment")).order_by(
                     "-comments_count"
                 )
-            if sorting_feature == "publication_date":
-                return query.order_by("publication_date")
+            elif sorting_feature == "publication_date":
+                query = query.order_by("publication_date")
 
-        # фильтр
-        if "filter" in self.request.GET:
-            filter_feature = self.request.GET.get("filter")
-            filter_query_value = self.request.GET.get("filter_query")
-
-            if filter_feature == "username":
-                return query.filter(author__username__icontains=filter_query_value)
-            if filter_feature == "description":
-                return query.filter(description__icontains=filter_query_value)
-            if filter_feature == "title":
-                pass
-
-        return query.order_by("publication_date")
+        return query

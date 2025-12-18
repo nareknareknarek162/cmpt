@@ -1,5 +1,7 @@
 from django.db import models
 
+from .fsm import Flow, State
+
 
 class Photo(models.Model):
     author = models.ForeignKey(
@@ -16,6 +18,14 @@ class Photo(models.Model):
         blank=True, null=True, verbose_name="Дата и время публикации"
     )
     image = models.ImageField(verbose_name="Фото")
+
+    state = models.CharField(
+        max_length=63, default=State.ON_MODERATION, choices=State.choices
+    )
+
+    @property
+    def flow(self):
+        return Flow(self)
 
     class Meta:
         db_table = "photos"

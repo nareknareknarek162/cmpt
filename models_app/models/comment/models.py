@@ -19,8 +19,11 @@ class Comment(models.Model):
     text = models.CharField(
         blank=False, null=False, max_length=1023, verbose_name="Комментарий"
     )
-    comment_date = models.DateTimeField(
-        blank=True, null=True, verbose_name="Дата и время комментария"
+    created_at = models.DateTimeField(
+        verbose_name="Дата и время создания", auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Дата и время последнего обновления", auto_now=True
     )
 
     class Meta:
