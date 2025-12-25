@@ -10,7 +10,8 @@ class PhotoForm(ModelForm):
         required=True,
         widget=forms.Textarea(attrs={"rows": 4, "class": "form-control"}),
     )
+    title = forms.CharField(max_length=127, required=True)
 
     class Meta:
         model = Photo
-        fields = ["image", "description"]
+        fields = ["image", "title", "description"]

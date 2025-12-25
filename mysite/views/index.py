@@ -17,7 +17,9 @@ class IndexView(ListView):
         # фильтр
         if search:
             query = query.filter(
-                Q(description__icontains=search) | Q(author__username__icontains=search)
+                Q(description__icontains=search)
+                | Q(author__username__icontains=search)
+                | Q(title__icontains=search)
             )
 
         # сортировка

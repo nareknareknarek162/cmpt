@@ -33,6 +33,7 @@
     </div>
 </nav>
 
+<p class="text-center fw-semibold fs-2">{{ photo.title }}</p>
 <img src="{{ photo.image.url }}" class="rounded mx-auto d-block">
 <p class="text-center">{{ photo.description }}</p>
 <p class="text-center">Автор: {{photo.author}}</p>
@@ -73,6 +74,9 @@
                 {% endif %}
             </form>
         </div>
+        <p class="fw-semibold mb-1">
+            Комментариев: {{ comments.count }}
+        </p>
         <div class="d-flex flex-column align-items-start">
             {% for comment in comments %}
             <div class="card mb-1 mt-2">
