@@ -12,11 +12,10 @@ class IndexView(ListView):
 
     def get_queryset(self):
         query = super().get_queryset()
+        search = self.request.GET.get("search")
 
         # фильтр
-        if "search" in self.request.GET:
-            search = self.request.GET.get("search")
-
+        if search:
             query = query.filter(
                 Q(description__icontains=search) | Q(author__username__icontains=search)
             )

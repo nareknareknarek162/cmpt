@@ -11,6 +11,9 @@ class Photo(models.Model):
         related_query_name="photo",
         verbose_name="Автор",
     )
+    title = models.CharField(
+        blank=True, null=True, max_length=511, verbose_name="Название"
+    )
     description = models.CharField(
         blank=True, null=True, max_length=511, verbose_name="Описание"
     )

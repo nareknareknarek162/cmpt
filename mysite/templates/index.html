@@ -52,9 +52,9 @@
             </div>
         </div>
 
-        <div class="ms-3 d-flex flex-column">
+        <form method="GET" action="{% url 'index' %}">
             <!-- Сортировка -->
-            <form method="GET" action="{% url 'index' %}">
+            <div class="ms-3 d-flex flex-column">
                 {% csrf_token %}
                 <fieldset>
                     <legend>Отсортировать по:</legend>
@@ -80,24 +80,17 @@
                         </label>
                     </div>
                 </fieldset>
-                <button type="submit" class="btn btn-primary w-100">Применить</button>
-            </form>
 
-            <!--фильтр-->
-            <div class="mt-4">
-                <form method="GET" action="">
-                    <fieldset>
-                        <legend>Искать по:</legend>
+                <!--фильтр-->
+                <fieldset>
+                    <legend>Искать по:</legend>
 
-                        <input type="text" name="search" class="form-control mb-2"
-                               placeholder="Поиск...">
-
-                        <button type="submit" class="btn btn-secondary w-100">Искать</button>
-                    </fieldset>
-                </form>
+                    <input type="text" name="search" class="form-control mb-2"
+                           placeholder="Поиск...">
+                </fieldset>
+                <button type="submit" class="btn btn-success w-100">Применить</button>
             </div>
-        </div>
-
+        </form>
     </div>
 </div>
 
