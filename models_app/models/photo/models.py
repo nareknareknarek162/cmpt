@@ -12,7 +12,7 @@ class Photo(models.Model):
         verbose_name="Автор",
     )
     title = models.CharField(
-        blank=True, null=True, max_length=511, verbose_name="Название"
+        blank=True, null=True, max_length=255, verbose_name="Название"
     )
     description = models.CharField(
         blank=True, null=True, max_length=511, verbose_name="Описание"
@@ -23,8 +23,14 @@ class Photo(models.Model):
     image = models.ImageField(verbose_name="Фото")
 
     state = models.CharField(
-        max_length=63, default=State.ON_MODERATION, choices=State.choices
+        max_length=63,
+        default=State.ON_MODERATION,
+        choices=State.choices,
+        verbose_name="Статус",
     )
+
+    def __str__(self):
+        return self.title
 
     @property
     def flow(self):
