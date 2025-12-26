@@ -9,6 +9,10 @@ from models_app.models import Photo
 def make_approved(modeladmin, request, queryset):
     queryset.update(state="approved", publication_date=timezone.now())
 
+@admin.action(description="Отклонить выбранные фотографии")
+def make_rejected(modeladmin, request, queryset):
+    queryset.update(state="rejected")
+
 
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
@@ -25,9 +29,9 @@ class PhotoAdmin(admin.ModelAdmin):
     readonly_fields = ["image_preview", "author"]
 
     list_display = ["title", "state", "publication_date"]
-    list_filter = ["state"]
+    list_filter = ["state", "author"]
 
-    actions = [make_approved]
+    actions = [make_approved, make_rejected]
 
     @admin.display(description="Фото")
     def image_preview(self, obj):

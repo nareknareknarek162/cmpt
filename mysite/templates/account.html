@@ -6,42 +6,66 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-  <div class="container">
-    <a class="navbar-brand" href="/">Competition</a>
-  </div>
+    <div class="container">
+        <a class="navbar-brand" href="/">Competition</a>
+    </div>
 </nav>
 <div class="container mb-4">
-  <h5 class="mb-3">Добавить фото</h5>
-  <div class="card p-4 shadow-sm border-0">
-      <a href="{% url 'add-photo' %}">
-    <button class="btn btn-primary rounded-pill px-4 py-2">
-      Загрузить фото
-    </button>
-      </a>
-  </div>
-</div>
-<div class="container mb-4">
-  <h5 class="mb-3">Опубликованные фото</h5>
-  <div class="row g-3">
-  {% for photo in photos %}
-   <div class="col-12 col-sm-6 col-md-4">
-      <a href="{% url 'details' photo.pk %}">
-        <img src="{{ photo.image.url }}" class="img-fluid rounded" style="max-width:200px;">
-      </a>
+    <h5 class="mb-3">Добавить фото</h5>
+    <div class="card p-4 shadow-sm border-0">
+        <a href="{% url 'add-photo' %}">
+            <button class="btn btn-primary rounded-pill px-4 py-2">
+                Загрузить фото
+            </button>
+        </a>
     </div>
-  {% endfor %}
-  </div>
 </div>
 <div class="container mb-4">
-  <h5 class="mb-3">Фото на модерации</h5>
-  <div class="row g-3">
-  </div>
+    <h5 class="mb-3">Опубликованные фото</h5>
+    <div class="row">
+        {% for photo in photos %}
+        {% if photo.state == "approved" %}
+        <div class="col-6 col-md-4 mb-3">
+            <a href="{% url 'details' photo.pk %}">
+                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
+                     style="max-width:200px;">
+            </a>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
 </div>
 
 <div class="container mb-4">
-  <h5 class="mb-3">Удалённые фото</h5>
-  <div class="row g-3">
-  </div>
+    <h5 class="mb-3">Фото на модерации</h5>
+    <div class="row">
+        {% for photo in photos %}
+        {% if photo.state == "on_moderation" %}
+        <div class="col-6 col-md-4 mb-3">
+            <a href="{% url 'details' photo.pk %}">
+                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
+                     style="max-width:200px;">
+            </a>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mb-4">
+    <h5 class="mb-3">Фото к удалению</h5>
+    <div class="row">
+        {% for photo in photos %}
+        {% if photo.state == "on_delete" %}
+        <div class="col-6 col-md-4 mb-3">
+            <a href="{% url 'details' photo.pk %}">
+                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
+                     style="max-width:200px;">
+            </a>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
 </div>
 </body>
 </html>
