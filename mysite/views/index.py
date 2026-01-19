@@ -25,14 +25,15 @@ class IndexView(ListView):
         # сортировка
         if "sort" in self.request.GET:
             sorting_feature = self.request.GET.get("sort")
+            order = self.request.GET.get("order")
 
             if sorting_feature == "likes":
                 query = query.annotate(likes_count=Count("like")).order_by(
-                    "-likes_count"
+                    f"{order}likes_count"
                 )
             elif sorting_feature == "comments":
                 query = query.annotate(comments_count=Count("comment")).order_by(
-                    "-comments_count"
+                    f"{order}comments_count"
                 )
             elif sorting_feature == "publication_date":
                 query = query.order_by("publication_date")
