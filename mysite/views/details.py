@@ -12,19 +12,24 @@ class DetailedPhotoView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["is_liked"] = Like.objects.filter(
-            user=self.request.user, photo=self.get_object()
-        ).exists()
+        if self.request.user.is_authenticated:
+            context["is_liked"] = Like.objects.filter(
+                user=self.request.user, photo=self.get_object()
+            ).exists()
+
+            context["users_comment"] = Comment.objects.filter(
+                author=self.request.user, photo=self.get_object()
+            ).first()
+
+            context["has_commented"] = Comment.objects.filter(
+                author=self.request.user, photo=self.get_object()
+            ).exists()
+        else:
+            context["is_liked"] = False
+            context["has_commented"] = False
 
         context["comments"] = Comment.objects.filter(photo=self.get_object())
-        context["users_comment"] = Comment.objects.filter(
-            author=self.request.user, photo=self.get_object()
-        ).first()
-
         context["editing"] = self.request.GET.get("edit") == "1"
-        context["has_commented"] = Comment.objects.filter(
-            author=self.request.user, photo=self.get_object()
-        ).exists()
         return context
 
     def post(self, request, *args, **kwargs):

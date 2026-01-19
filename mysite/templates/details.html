@@ -55,24 +55,26 @@
 <div class="container mt-3">
     <div class="d-flex flex-column align-items-center">
         <div>
-            <form method="POST">
-                {% csrf_token %}
-                {% if editing %}
-                <textarea id="text_input_update" name="comment_text" rows="5" cols="80">{{users_comment.text}}</textarea>
-                <button id="update_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
-                        value="update">Сохранить</button>
-                {% elif has_commented %}
-                <div class="d-grid gap-2 d-md-block">
-                    <button class="btn btn-secondary" type="submit" name="comment" value="delete">Удалить</button>
-                    <a href="?edit=1" class="btn btn-danger">Редактировать</a>
-                </div>
-                {% else %}
-                <textarea id="text_input" name="comment_text" rows="5" cols="80"></textarea>
-                <button id="send_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
-                        value="save" disabled>Отправить
-                </button>
-                {% endif %}
-            </form>
+            {% if user.is_authenticated %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if editing %}
+                    <textarea id="text_input_update" name="comment_text" rows="5" cols="80">{{users_comment.text}}</textarea>
+                    <button id="update_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
+                            value="update">Сохранить</button>
+                    {% elif has_commented %}
+                    <div class="d-grid gap-2 d-md-block">
+                        <button class="btn btn-secondary" type="submit" name="comment" value="delete">Удалить</button>
+                        <a href="?edit=1" class="btn btn-danger">Редактировать</a>
+                    </div>
+                    {% else %}
+                    <textarea id="text_input" name="comment_text" rows="5" cols="80"></textarea>
+                    <button id="send_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
+                            value="save" disabled>Отправить
+                    </button>
+                    {% endif %}
+                </form>
+            {% endif %}
         </div>
         <p class="fw-semibold mb-1">
             Комментариев: {{ comments.count }}
