@@ -15,7 +15,7 @@ def make_approved(modeladmin, request, queryset):
             photo.publication_date = timezone.now()
             photo.save()
         except TransitionNotAllowed:
-            messages.warning(request, "Выбранные фотографии нельзя одобрить")
+            messages.warning(request, f"Фотографию {photo} нельзя одобрить")
 
 
 @admin.action(description="Отклонить выбранные фотографии")
@@ -25,7 +25,7 @@ def make_rejected(modeladmin, request, queryset):
             photo.flow.reject()
             photo.save()
         except TransitionNotAllowed:
-            messages.warning(request, "Выбранные фотографии нельзя отклонить")
+            messages.warning(request, f"Фотографию {photo} нельзя отклонить")
 
 
 @admin.register(Photo)
