@@ -4,6 +4,7 @@ from django.utils.html import format_html
 from viewflow.fsm import TransitionNotAllowed
 
 from models_app.models import Photo
+from models_app.models.photo.fsm import State
 
 
 @admin.action(description="Одобрить выбранные фотографии")
@@ -40,7 +41,6 @@ class PhotoAdmin(admin.ModelAdmin):
 
     exclude = ["image"]
     readonly_fields = ["image_preview", "author"]
-    # change_form_template =
 
     list_display = ["title", "state", "publication_date", "author"]
     list_filter = ["state"]
@@ -55,3 +55,19 @@ class PhotoAdmin(admin.ModelAdmin):
                 '<img src="{}" style="max-width:100%; max-height:600px;" />',
                 obj.image.url,
             )
+
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        if db_field.name == "state":
+            id = request.resolver_match.kwargs.get("object_id")  # ?
+            pic = Photo.objects.get(pk=id)
+            if pic.state == State.ON_MODERATION:
+                kwargs["choices"] = [
+                    (State.APPROVED, "Approved"),
+                    (State.REJECTED, "Rejected"),
+                ]
+            elif pic.state == State.APPROVED:
+                kwargs["choices"] = [
+                    (State.REJECTED, "Rejected"),
+                    (State.ON_MODERATION, "On Moderation"),
+                ]
+            return super().formfield_for_choice_field(db_field, request, **kwargs)
