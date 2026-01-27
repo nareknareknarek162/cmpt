@@ -46,9 +46,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "request_id",
+    "oauth2_provider",
     "corsheaders",
     "models_app",
     "mysite",
+    "api",
+    "rest_framework",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -141,3 +145,5 @@ MEDIA_URL = "/uploads/"
 AUTH_USER_MODEL = "models_app.User"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGIN_URL = "/admin/login/"

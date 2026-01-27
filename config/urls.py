@@ -19,11 +19,35 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from oauth2_provider import urls as oauth2_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("mysite.urls")),
+    path("o/", include(oauth2_urls)),
 ]
+
+
+api_urlpatterns = [
+    path("api/", include("api.urls")),
+]
+
+api_docs_urlpatterns = [
+    path(
+        "api/schema/",
+        SpectacularAPIView.as_view(urlconf=api_urlpatterns),
+        name="api_schema",
+    ),
+    path(
+        "api/swagger/",
+        SpectacularSwaggerView.as_view(url_name="api_schema"),
+        name="api_swagger-ui",
+    ),
+]
+
+urlpatterns += api_urlpatterns
+urlpatterns += api_docs_urlpatterns
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
