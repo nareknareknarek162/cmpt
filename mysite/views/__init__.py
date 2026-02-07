@@ -4,3 +4,4 @@ from mysite.views.auth import AuthView, Logout
 from mysite.views.details import DetailedPhotoView
 from mysite.views.index import IndexView
 from mysite.views.registration import RegistrationView
+from mysite.views.yandex import Yandex
