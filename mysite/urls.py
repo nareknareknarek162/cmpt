@@ -8,6 +8,7 @@ from mysite.views import (
     IndexView,
     Logout,
     RegistrationView,
+    Yandex,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path("registration/", RegistrationView.as_view(), name="registration"),
     path("account/", AccountView.as_view(), name="account"),
     path("photos/add", AddPhotoView.as_view(), name="add-photo"),
+    path("oauth/yandex", Yandex.as_view(), name="callback"),
 ]
