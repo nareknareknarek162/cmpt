@@ -18,6 +18,8 @@ class User(AbstractUser):
         verbose_name="Пол",
     )
 
+    profile_pic = models.ImageField(verbose_name="Фото профиля", blank=False, null=True)
+
     class Meta:
         db_table = "users"
         verbose_name = "Пользователь"
