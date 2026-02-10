@@ -1,4 +1,4 @@
-from api.serializers.comment import CommentShowSerializer
+from api.serializers.comment.show import CommentShowSerializer
 from utils.docs_typed_dict import DocsDict
 
 SHOW_COMMENT: DocsDict = {

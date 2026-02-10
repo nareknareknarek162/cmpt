@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
 from api.docs.comment import SHOW_COMMENT
-from api.serializers.comment import CommentShowSerializer
+from api.serializers.comment.show import CommentShowSerializer
 from api.services.comment.show import CommentShowService
 
 
