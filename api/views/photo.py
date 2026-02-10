@@ -4,8 +4,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
-from api.docs.photo import SHOW_PHOTO
-from api.serializers.photo import PhotoShowSerializer
+from api.docs.photo import CREATE_PHOTO, DELETE_PHOTO, SHOW_PHOTO
+from api.serializers.photo.create import PhotoCreateSerializer
+from api.serializers.photo.delete import PhotoDeleteSerializer
+from api.serializers.photo.show import PhotoShowSerializer
+from api.services.photo.create import PhotoCreateService
+from api.services.photo.delete import PhotoDeleteService
 from api.services.photo.show import PhotoShowService
 
 
@@ -16,4 +20,20 @@ class RetrievePhotoView(APIView):
         outcome = ServiceOutcome(PhotoShowService, {"id": kwargs["id"]})
         return Response(
             PhotoShowSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
+
+    @extend_schema(**DELETE_PHOTO)
+    def delete(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(PhotoDeleteService, {"id": kwargs["id"]})
+        return Response(
+            PhotoDeleteSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
+
+
+class PhotoCreateView(APIView):
+    @extend_schema(**CREATE_PHOTO)
+    def post(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(PhotoCreateService, request.data)
+        return Response(
+            PhotoCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
