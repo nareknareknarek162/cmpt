@@ -1,12 +1,11 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
 from api.docs.photo import CREATE_PHOTO, DELETE_PHOTO, SHOW_PHOTO
-from api.serializers.photo.create import PhotoCreateSerializer
-from api.serializers.photo.delete import PhotoDeleteSerializer
 from api.serializers.photo.show import PhotoShowSerializer
 from api.services.photo.create import PhotoCreateService
 from api.services.photo.delete import PhotoDeleteService
@@ -25,15 +24,15 @@ class RetrievePhotoView(APIView):
     @extend_schema(**DELETE_PHOTO)
     def delete(self, request, *args, **kwargs):
         outcome = ServiceOutcome(PhotoDeleteService, {"id": kwargs["id"]})
-        return Response(
-            PhotoDeleteSerializer(outcome.result).data, status=status.HTTP_200_OK
-        )
+        return Response(None, status=status.HTTP_200_OK)
 
 
-class PhotoCreateView(APIView):
+class PhotoListCreateView(APIView):
+    parser_classes = [MultiPartParser]
+
     @extend_schema(**CREATE_PHOTO)
     def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PhotoCreateService, request.data)
+        outcome = ServiceOutcome(PhotoCreateService, request.data, request.FILES)
         return Response(
-            PhotoCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
+            PhotoShowSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
