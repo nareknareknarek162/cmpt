@@ -9,6 +9,12 @@ SHOW_PHOTO: DocsDict = {
     "responses": {200: PhotoShowSerializer},
 }
 
+SHOW_LIST_PHOTO: DocsDict = {
+    "tags": ["photo"],
+    "description": "Show List of all Photos",
+    "responses": {200: PhotoShowSerializer},
+}
+
 DELETE_PHOTO: DocsDict = {
     "tags": ["photo"],
     "description": "Delete Photo by Id",
