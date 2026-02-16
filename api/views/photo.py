@@ -5,13 +5,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
-from api.docs.photo import CREATE_PHOTO, DELETE_PHOTO, SHOW_LIST_PHOTO, SHOW_PHOTO
+from api.docs.photo import (
+    CREATE_PHOTO,
+    DELETE_LIST_PHOTO,
+    DELETE_PHOTO,
+    PATCH_PHOTO,
+    SHOW_LIST_PHOTO,
+    SHOW_PHOTO,
+)
 from api.serializers.photo.show import PhotoShowSerializer
 from api.serializers.photo.showdeatil import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
 from api.services.photo.delete import PhotoDeleteService
+from api.services.photo.listdelete import PhotoListDeleteService
 from api.services.photo.listshow import PhotoListShowService
 from api.services.photo.show import PhotoShowService
+from api.services.photo.update import PhotoUpdateService
 
 
 class RetrievePhotoView(APIView):
@@ -27,6 +36,13 @@ class RetrievePhotoView(APIView):
     def delete(self, request, *args, **kwargs):
         outcome = ServiceOutcome(PhotoDeleteService, {"id": kwargs["id"]})
         return Response(None, status=status.HTTP_200_OK)
+
+    @extend_schema(**PATCH_PHOTO)
+    def patch(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(PhotoUpdateService, {"id": kwargs["id"]})
+        return Response(
+            PhotoShowDetailSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
 
 
 class PhotoListCreateView(APIView):
@@ -46,3 +62,8 @@ class PhotoListCreateView(APIView):
             PhotoShowSerializer(outcome.result, many=True).data,
             status=status.HTTP_200_OK,
         )
+
+    @extend_schema(**DELETE_LIST_PHOTO)
+    def delete(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(PhotoListDeleteService, {})
+        return Response(None, status=status.HTTP_200_OK)

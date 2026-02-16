@@ -27,3 +27,16 @@ CREATE_PHOTO: DocsDict = {
     "request": PhotoCreateSerializer,
     "responses": {201: PhotoCreateSerializer},
 }
+
+PATCH_PHOTO: DocsDict = {
+    "tags": ["photo"],
+    "description": "Update a Photo",
+    "request": PhotoShowSerializer,
+    "responses": {201: PhotoShowSerializer},
+}
+
+DELETE_LIST_PHOTO: DocsDict = {
+    "tags": ["photo"],
+    "description": "Delete Photo by Id",
+    "responses": {200: PhotoDeleteSerializer},
+}

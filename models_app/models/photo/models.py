@@ -18,7 +18,7 @@ class Photo(models.Model):
         blank=True, null=True, max_length=511, verbose_name="Описание"
     )
     publication_date = models.DateTimeField(
-        blank=True, null=True, verbose_name="Дата и время публикации"
+        blank=True, null=True, verbose_name="Дата и время публикации", auto_now=True
     )
     image = models.ImageField(verbose_name="Фото")
 
