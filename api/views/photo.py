@@ -7,6 +7,7 @@ from service_objects.services import ServiceOutcome
 
 from api.docs.photo import CREATE_PHOTO, DELETE_PHOTO, SHOW_LIST_PHOTO, SHOW_PHOTO
 from api.serializers.photo.show import PhotoShowSerializer
+from api.serializers.photo.showdeatil import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
 from api.services.photo.delete import PhotoDeleteService
 from api.services.photo.listshow import PhotoListShowService
@@ -19,7 +20,7 @@ class RetrievePhotoView(APIView):
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(PhotoShowService, {"id": kwargs["id"]})
         return Response(
-            PhotoShowSerializer(outcome.result).data, status=status.HTTP_200_OK
+            PhotoShowDetailSerializer(outcome.result).data, status=status.HTTP_200_OK
         )
 
     @extend_schema(**DELETE_PHOTO)
