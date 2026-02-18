@@ -26,6 +26,15 @@ class Comment(models.Model):
         verbose_name="Дата и время последнего обновления", auto_now=True
     )
 
+    parent_comment = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="replies",
+        verbose_name="Родительский комментарий",
+    )
+
     class Meta:
         db_table = "comments"
         verbose_name = "Комментарий"
