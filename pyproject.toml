@@ -22,7 +22,8 @@ dependencies = [
     "django-service-objects @ git+ssh://git@github.com/dvkurbatov/django-service-objects.git",
     "drf-spectacular (>=0.29.0,<0.30.0)",
     "requests (>=2.32.5,<3.0.0)",
-    "types-requests (>=2.32.4.20260107,<3.0.0.0)"
+    "types-requests (>=2.32.4.20260107,<3.0.0.0)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)"
 ]
 
 

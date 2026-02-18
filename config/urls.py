@@ -21,6 +21,10 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from oauth2_provider import urls as oauth2_urls
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,6 +35,11 @@ urlpatterns = [
 
 api_urlpatterns = [
     path("api/", include("api.urls")),
+]
+
+jwt_urlpatterns = [
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 
 api_docs_urlpatterns = [
@@ -48,6 +57,7 @@ api_docs_urlpatterns = [
 
 urlpatterns += api_urlpatterns
 urlpatterns += api_docs_urlpatterns
+urlpatterns += jwt_urlpatterns
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
