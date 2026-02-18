@@ -22,7 +22,9 @@ class RetrieveUserView(APIView):
 
     @extend_schema(**DELETE_USER)
     def delete(self, request, *args, **kwargs):
+
         outcome = ServiceOutcome(UserDeleteService, {"id": kwargs["id"]})
         return Response(
             UserDeleteSerializer(outcome.result).data, status=status.HTTP_200_OK
         )
+
