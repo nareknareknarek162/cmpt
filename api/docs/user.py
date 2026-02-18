@@ -21,3 +21,10 @@ CREATE_USER: DocsDict = {
     "request": UserCreateSerializer,
     "responses": {201: UserShowSerializer},
 }
+
+UPDATE_USER: DocsDict = {
+    "tags": ["user"],
+    "description": "Update User by Id",
+    "request": UserCreateSerializer,
+    "responses": {200: UserShowSerializer},
+}
