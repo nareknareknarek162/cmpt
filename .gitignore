@@ -3,3 +3,5 @@
 .idea/
 /logs
 /uploads/
+**/__pycache__/
+__pycache__
