@@ -7,9 +7,7 @@ class User(AbstractUser):
         MALE = "M", "Мужской"
         FEMALE = "F", "Женский"
 
-    birth_date = models.DateTimeField(
-        blank=True, null=True, verbose_name="Дата рождения"
-    )
+    birth_date = models.DateField(blank=True, null=True, verbose_name="Дата рождения")
     gender = models.CharField(
         max_length=1,
         choices=Gender,
