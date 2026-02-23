@@ -26,7 +26,6 @@ from api.services.photo.update import PhotoUpdateService
 
 class RetrievePhotoView(APIView):
     parser_classes = [MultiPartParser]
-
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**SHOW_PHOTO)

@@ -10,7 +10,8 @@ class UserUpdateService(ServiceWithResult):
     first_name = forms.CharField()
     last_name = forms.CharField()
     email = forms.EmailField()
-    birth_date = forms.DateTimeField()
+    birth_date = forms.DateField()
+    password = forms.CharField()
     gender = forms.ChoiceField(choices=[("M", "Мужской"), ("F", "Женский")])
 
     def process(self):

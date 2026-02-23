@@ -9,7 +9,7 @@ class UserCreateService(ServiceWithResult):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
-    birth_date = forms.DateTimeField(required=True)
+    birth_date = forms.DateField(required=True)
     password = forms.CharField(required=True)
     gender = forms.ChoiceField(
         required=True, choices=[("M", "Мужской"), ("F", "Женский")]
