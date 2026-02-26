@@ -1,12 +1,12 @@
 from django import forms
 from service_objects.services import ServiceWithResult
-
-from models_app.models import Like
+from service_objects.fields import ModelField
+from models_app.models import Like, User
 
 
 class LikeCreateService(ServiceWithResult):
     photo_id = forms.IntegerField(required=True)
-    user = forms.IntegerField(required=True)
+    user = ModelField(User)
 
     def process(self):
         self.result = self._create_like()

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
-from api.docs.like import CREATE_LIKE, SHOW_LIKES
+from api.docs.like import CREATE_LIKE, SHOW_LIKES, DELETE_LIKE
+from api.serializers.likes.create import LikeCreateSerializer
 from api.serializers.likes.show import LikeShowSerializer
 from api.services.like.create import LikeCreateService
 from api.services.like.delete import LikeDeleteService
@@ -31,13 +32,14 @@ class CreateListLikesView(APIView):
     def post(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             LikeCreateService,
-            {"photo_id": kwargs["photo_id"], "user": request.data.user},
+            {"photo_id": kwargs["photo_id"], "user": request.user},
         )
         return Response(
-            LikeShowSerializer(outcome.result).data,
+            LikeCreateSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED,
         )
 
+    @extend_schema(**DELETE_LIKE)
     def delete(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             LikeDeleteService,
