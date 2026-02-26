@@ -1,19 +1,22 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
-from api.docs.user import CREATE_USER, DELETE_USER, SHOW_USER, UPDATE_USER
+from api.docs.user import CREATE_USER, DELETE_USER, SHOW_USER, UPDATE_USER, SHOW_USER_LIST
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.show import UserShowSerializer
 from api.services.user.create import UserCreateService
 from api.services.user.delete import UserDeleteService
 from api.services.user.show import UserShowService
+from api.services.user.showlist import UserListShowService
 from api.services.user.update import UserUpdateService
 
 
 class RetrieveUserView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**SHOW_USER)
     def get(self, request, *args, **kwargs):
@@ -37,6 +40,13 @@ class RetrieveUserView(APIView):
 
 
 class UserListCreateView(APIView):
+
+    @extend_schema(**SHOW_USER_LIST)
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(UserListShowService, {})
+        return Response(
+            UserShowSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK
+        )
 
     @extend_schema(**CREATE_USER)
     def post(self, request, *args, **kwargs):

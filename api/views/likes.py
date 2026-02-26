@@ -8,6 +8,7 @@ from service_objects.services import ServiceOutcome
 from api.docs.like import CREATE_LIKE, SHOW_LIKES
 from api.serializers.likes.show import LikeShowSerializer
 from api.services.like.create import LikeCreateService
+from api.services.like.delete import LikeDeleteService
 from api.services.like.show import LikesShowService
 
 
@@ -36,3 +37,10 @@ class CreateListLikesView(APIView):
             LikeShowSerializer(outcome.result).data,
             status=status.HTTP_201_CREATED,
         )
+
+    def delete(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(
+            LikeDeleteService,
+            {"photo_id": kwargs["photo_id"]},
+        )
+        return Response(None, status=status.HTTP_200_OK)

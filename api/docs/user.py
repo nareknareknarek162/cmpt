@@ -28,3 +28,9 @@ UPDATE_USER: DocsDict = {
     "request": UserCreateSerializer,
     "responses": {200: UserShowSerializer},
 }
+
+SHOW_USER_LIST: DocsDict = {
+    "tags": ["user"],
+    "description": "Show list of all Users",
+    "responses": {200: UserShowSerializer},
+}

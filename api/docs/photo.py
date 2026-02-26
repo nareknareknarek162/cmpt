@@ -35,9 +35,3 @@ PATCH_PHOTO: DocsDict = {
     "request": PhotoUpdateSerializer,
     "responses": {201: PhotoShowSerializer},
 }
-
-DELETE_LIST_PHOTO: DocsDict = {
-    "tags": ["photo"],
-    "description": "Delete Photo by Id",
-    "responses": {200: PhotoDeleteSerializer},
-}
