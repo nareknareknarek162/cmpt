@@ -15,18 +15,22 @@
     <p style="color: red;">{{ error }}</p>
     {% endif %}
 
-    <form action="/auth/" method="POST">
+    <form id="forma">
         {% csrf_token %}
         <div class="mb-3">
             <label class="form-label">Имя пользователя</label>
-            <input type="text" class="form-control" name="username" autofocus>
+            <input type="text" class="form-control" name="username" id="usernameId" autofocus>
         </div>
         <div class="mb-3">
             <label class="form-label">Пароль</label>
-            <input type="password" class="form-control" name="password">
+            <input type="password" class="form-control" id="passwordId" name="password">
         </div>
-        <button type="submit" class="btn btn-primary w-100">Войти</button>
+        <button id="fetchButton" type="button" class="btn btn-primary w-100">Войти</button>
     </form>
+    <div id="dataContainer">
+        ABCEDFG
+    </div>
+
     <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id=10dc981aa3b241ee999535fcd46f9212"
        class="btn btn-dark w-100 mt-1 " style="border-radius:13px;">
         <span class="text-white rounded-circle fw-bold d-inline-block me-1"
@@ -37,4 +41,34 @@
     </a>
 </div>
 </body>
+<script>
+    document.getElementById('fetchButton').addEventListener('click', fetchData);
+
+function fetchData() {
+    // Replace with the actual API endpoint you want to use
+    const apiURL = 'http://127.0.0.1:8000/api/token/';
+    let username = document.getElementById("usernameId").value
+    let password = document.getElementById("passwordId").value
+
+    fetch(apiURL, {method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify({"username": username, "password": password})})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            // Assuming the response is JSON, convert it to a JavaScript object
+            return response.json();
+        })
+        .then(data => {
+            // Manipulate the DOM to display the data
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = `<p>Data fetched: ${JSON.stringify(data)}</p>`;
+        })
+        .catch(error => {
+            // Handle any errors during the fetch operation
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = `<p>Error: ${error.message}</p>`;
+            console.error('Fetch error:', error);
+        });
+}
+</script>
 </html>
