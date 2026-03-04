@@ -1,14 +1,15 @@
 from django import forms
+from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
-from models_app.models import Photo
+from models_app.models import Photo, User
 
 
 class PhotoCreateService(ServiceWithResult):
-    author_id = forms.IntegerField(required=True)
-    title = forms.CharField(required=False)
-    description = forms.CharField(required=False)
+    title = forms.CharField(required=True)
+    description = forms.CharField(required=True)
     image = forms.ImageField(required=True)
+    author_id = ModelField(User)
 
     def process(self):
         self.result = self._create_photo()

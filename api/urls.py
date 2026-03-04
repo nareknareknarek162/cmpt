@@ -6,12 +6,12 @@ from rest_framework_simplejwt.views import (
 
 from api.views.comment import CommentListCreateView, RetrieveCommentView
 from api.views.likes import CreateListLikesView, RetrieveListLikesView
-from api.views.photo import PhotoListCreateView, RetrievePhotoView
+from api.views.photo import PhotoDetailView, PhotoListCreateView
 from api.views.user import RetrieveUserView, UserListCreateView
 
 urlpatterns = [
     path("photo/", PhotoListCreateView.as_view()),
-    path("photo/<int:id>/", RetrievePhotoView.as_view()),
+    path("photo/<int:id>/", PhotoDetailView.as_view()),
     path("user/<int:id>/", RetrieveUserView.as_view()),
     path("user/", UserListCreateView.as_view()),
     path("like/<int:photo_id>/", CreateListLikesView.as_view()),

@@ -14,7 +14,7 @@ class PhotoUpdateService(ServiceWithResult):
     id = forms.IntegerField(required=True)
     title = forms.CharField(required=False)
     description = forms.CharField(required=False)
-    image = forms.ImageField(required=True)
+    image = forms.ImageField(required=False)
     user = ModelField(User)
 
     custom_validations = ["_validate_photo_exist", "_validate_author"]
@@ -23,16 +23,19 @@ class PhotoUpdateService(ServiceWithResult):
         self.run_custom_validations()
         if self.is_valid():
             self.result = self._update_photo()
+        else:
+            self.service_clean()
         return self
 
     def _update_photo(self):
         photo = self._photo
-        photo.title = self.cleaned_data["title"]
-        photo.description = self.cleaned_data["description"]
-        photo.image = self.cleaned_data["image"]
+        for field in ("title", "description", "image"):
+            value = self.cleaned_data.get(field)
+            if value not in (None, ""):
+                setattr(photo, field, self.cleaned_data[field])
         photo.state = State.ON_MODERATION
-        photo.save()
 
+        photo.save()
         return photo
 
     @property
