@@ -40,15 +40,7 @@
         <!-- Фото -->
         <div class="flex-grow-1 pe-4">
             <h1 class="pb-3">Конкурс</h1>
-            <div class="row">
-                {% for photo in page_obj %}
-                <div class="col-6 col-md-4 mb-3">
-                    <a href="{% url 'details' photo.pk %}">
-                        <img src="{{ photo.image.url }}" title="{{photo.description}}" class="img-fluid rounded"
-                             style="max-width:200px;">
-                    </a>
-                </div>
-                {% endfor %}
+            <div class="row" id="photos-container">
             </div>
         </div>
 
@@ -133,5 +125,52 @@
 <footer class="bg-dark text-white text-center py-3 fixed-bottom">
     © 2025 Competition.org
 </footer>
+<script>
+function fetchPhotos() {
+    const apiURL = 'http://127.0.0.1:8000/api/photo/';
+    let access_token = localStorage.getItem("access_token")
+
+    fetch(apiURL, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        const container = document.getElementById("photos-container");
+
+        data.forEach(photo => {
+
+            const html = `
+                <div class="col-6 col-md-4 mb-3">
+                    <a href="/photo/${photo.id}/">
+                        <img src="${photo.image}"
+                             title="${photo.description}"
+                             class="img-fluid rounded"
+                             style="max-width:200px;">
+                    </a>
+                </div>
+            `;
+
+            container.innerHTML += html;
+        });
+
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPhotos();
+});
+</script>
 </body>
 </html>
