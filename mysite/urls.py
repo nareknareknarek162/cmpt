@@ -13,7 +13,7 @@ from mysite.views import (
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
-    path("photos/<int:pk>", DetailedPhotoView.as_view(), name="details"),
+    path("photo/<int:pk>/", DetailedPhotoView.as_view(), name="details"),
     path("auth/", AuthView.as_view(), name="auth"),
     path("logout/", Logout.as_view(), name="logout"),
     path("registration/", RegistrationView.as_view(), name="registration"),

@@ -33,11 +33,7 @@
     </div>
 </nav>
 
-<p class="text-center fw-semibold fs-2">{{ photo.title }}</p>
-<img src="{{ photo.image.url }}" class="rounded mx-auto d-block">
-<p class="text-center">{{ photo.description }}</p>
-<p class="text-center">Автор: {{photo.author}}</p>
-<p class="text-center">Загружено: {{photo.publication_date}}</p>
+<div id="photo"></div>
 <br>
 <form method="POST" class="text-center mt-3">
     {% csrf_token %}
@@ -110,6 +106,49 @@
             btn_update.disabled = !hasText;
         });
     }
+</script>
+<script>
+function fetchPhoto() {
+    const photoId = window.location.pathname.split("/")[2];
+    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+
+    let access_token = localStorage.getItem("access_token")
+
+    fetch(apiURL, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        const container = document.getElementById("photo");
+
+        const html = `
+            <p class="text-center fw-semibold fs-2">{{ photo.title }}</p>
+            <img src="{{ photo.image.url }}" class="rounded mx-auto d-block">
+            <p class="text-center">{{ photo.description }}</p>
+            <p class="text-center">Автор: {{photo.author}}</p>
+            <p class="text-center">Загружено: {{photo.publication_date}}</p>
+            `;
+        container.innerHTML += html;
+
+
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPhoto();
+});
 </script>
 </body>
 </html>
