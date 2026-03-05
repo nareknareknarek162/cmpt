@@ -27,9 +27,6 @@
         </div>
         <button id="fetchButton" type="button" class="btn btn-primary w-100">Войти</button>
     </form>
-    <div id="dataContainer">
-        ABCEDFG
-    </div>
 
     <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id=10dc981aa3b241ee999535fcd46f9212"
        class="btn btn-dark w-100 mt-1 " style="border-radius:13px;">
@@ -39,13 +36,13 @@
         </span>
         <span>Войти с Яндекс ID</span>
     </a>
+    <div id="dataContainer" class="text-center text-danger"></div>
 </div>
 </body>
 <script>
     document.getElementById('fetchButton').addEventListener('click', fetchData);
 
 function fetchData() {
-    // Replace with the actual API endpoint you want to use
     const apiURL = 'http://127.0.0.1:8000/api/token/';
     let username = document.getElementById("usernameId").value
     let password = document.getElementById("passwordId").value
@@ -55,18 +52,15 @@ function fetchData() {
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
-            // Assuming the response is JSON, convert it to a JavaScript object
             return response.json();
         })
         .then(data => {
-            // Manipulate the DOM to display the data
-            const container = document.getElementById('dataContainer');
-            container.innerHTML = `<p>Data fetched: ${JSON.stringify(data)}</p>`;
+            localStorage.setItem("access_token", data.access)
+            localStorage.setItem("refresh_token", data.refresh)
         })
         .catch(error => {
-            // Handle any errors during the fetch operation
             const container = document.getElementById('dataContainer');
-            container.innerHTML = `<p>Error: ${error.message}</p>`;
+            container.innerHTML = `<p>Пользователь с указанными данными не найден</p>`;
             console.error('Fetch error:', error);
         });
 }
