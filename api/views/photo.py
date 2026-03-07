@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
@@ -12,7 +13,6 @@ from api.docs.photo import (
     SHOW_LIST_PHOTO,
     SHOW_PHOTO,
 )
-from api.permissions.IsOwner import IsOwnerOrReadOnly
 from api.serializers.photo.show import PhotoShowSerializer
 from api.serializers.photo.showdeatil import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
@@ -24,7 +24,7 @@ from api.services.photo.update import PhotoUpdateService
 
 class PhotoDetailView(APIView):
     parser_classes = [MultiPartParser]
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**SHOW_PHOTO)
     def get(self, request, *args, **kwargs):
@@ -35,9 +35,7 @@ class PhotoDetailView(APIView):
 
     @extend_schema(**DELETE_PHOTO)
     def delete(self, request, *args, **kwargs):
-        ServiceOutcome(
-            PhotoDeleteService, {"id": kwargs["id"], "user": request.user}
-        )
+        ServiceOutcome(PhotoDeleteService, {"id": kwargs["id"], "user": request.user})
         return Response(None, status=status.HTTP_200_OK)
 
     @extend_schema(**PATCH_PHOTO)
@@ -54,7 +52,7 @@ class PhotoDetailView(APIView):
 
 class PhotoListCreateView(APIView):
     parser_classes = [MultiPartParser]
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**CREATE_PHOTO)
     def post(self, request, *args, **kwargs):

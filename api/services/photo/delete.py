@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from rest_framework import status
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
@@ -17,8 +18,6 @@ class PhotoDeleteService(ServiceWithResult):
         self.run_custom_validations()
         if self.is_valid():
             self.result = self._delete_photo()
-        else:
-            self.service_clean()
         return self
 
     def _delete_photo(self):
@@ -38,7 +37,9 @@ class PhotoDeleteService(ServiceWithResult):
     def _validate_photo_exists(self):
         if not self._photo:
             self.add_error("id", ValidationError(message="Запрошенной фотографии нет"))
+            self.response_status = status.HTTP_404_NOT_FOUND
 
     def _validate_author(self):
         if self._photo and self.cleaned_data["user"].id != self._photo.author_id:
             self.add_error("id", ValidationError(message="Нет доступа"))
+            self.response_status = status.HTTP_403_FORBIDDEN
