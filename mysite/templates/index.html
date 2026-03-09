@@ -131,10 +131,7 @@ function fetchPhotos() {
     let access_token = localStorage.getItem("access_token")
 
     fetch(apiURL, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${access_token}`
-        }
+        method: "GET"
     })
     .then(response => {
         if (!response.ok) {

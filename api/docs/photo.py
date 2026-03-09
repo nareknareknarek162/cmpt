@@ -1,3 +1,6 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter
+
 from api.serializers.photo.delete import PhotoDeleteSerializer
 from api.serializers.photo.modify import PhotoModifySerializer
 from api.serializers.photo.show import PhotoShowSerializer
@@ -13,8 +16,32 @@ SHOW_LIST_PHOTO: DocsDict = {
     "tags": ["photo"],
     "description": "Show List of all Photos",
     "responses": {200: PhotoShowSerializer},
+    "parameters": [
+        OpenApiParameter(
+            name="sort",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Sort by date/likes/comments",
+            enum=["date", "likes", "comments"],
+        ),
+        OpenApiParameter(
+            name="order",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Order of sorting",
+            enum=["-", ""],
+        ),
+        OpenApiParameter(
+            name="search",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Search string in username/title/description",
+        ),
+    ],
 }
-
 DELETE_PHOTO: DocsDict = {
     "tags": ["photo"],
     "description": "Delete Photo by Id",

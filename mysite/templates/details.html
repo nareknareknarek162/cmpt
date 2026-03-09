@@ -112,13 +112,9 @@ function fetchPhoto() {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
 
-    let access_token = localStorage.getItem("access_token")
 
     fetch(apiURL, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${access_token}`
-        }
+        method: "GET"
     })
     .then(response => {
         if (!response.ok) {

@@ -63,7 +63,7 @@ class PhotoListCreateView(APIView):
 
     @extend_schema(**SHOW_LIST_PHOTO)
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PhotoListShowService, {})
+        outcome = ServiceOutcome(PhotoListShowService, request.query_params)
         return Response(
             PhotoShowSerializer(outcome.result, many=True).data,
             status=status.HTTP_200_OK,
