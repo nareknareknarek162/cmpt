@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <form method="GET" action="{% url 'index' %}">
+        <form method="GET" action="{% url 'index' %}" id="photo-form">
             <!-- Сортировка -->
             <div class="ms-3 d-flex flex-column">
                 {% csrf_token %}
@@ -52,7 +52,7 @@
                     <legend>Отсортировать по:</legend>
                     <div>
                         <label>
-                            <input type="radio" name="sort" value="date"/>
+                            <input type="radio" name="sort" value="date" checked />
                             Дате
                         </label>
                     </div>
@@ -128,9 +128,20 @@
 <script>
 function fetchPhotos() {
     const apiURL = 'http://127.0.0.1:8000/api/photo/';
-    let access_token = localStorage.getItem("access_token")
 
-    fetch(apiURL, {
+    const form = document.getElementById("photo-form");
+
+    const formData = new FormData(form);
+    const search = formData.get('search');
+    const sort = formData.get('sort');
+    const order = formData.get('order');
+
+    const params = new URLSearchParams()
+    params.append("sort", sort);
+    params.append("order", order);
+    if (search) params.append("search", search);
+
+    fetch(`${apiURL}?${params.toString()}`, {
         method: "GET"
     })
     .then(response => {
@@ -142,6 +153,7 @@ function fetchPhotos() {
     .then(data => {
 
         const container = document.getElementById("photos-container");
+        container.innerHTML = ""
 
         data.forEach(photo => {
 
@@ -166,6 +178,11 @@ function fetchPhotos() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    fetchPhotos();
+});
+
+document.addEventListener("submit", function(e) {
+    e.preventDefault();
     fetchPhotos();
 });
 </script>
