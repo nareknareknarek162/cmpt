@@ -24,7 +24,7 @@ class RetrieveListLikesView(APIView):
         )
 
 
-class CreateListLikesView(APIView):
+class CreateLikesView(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -32,7 +32,7 @@ class CreateListLikesView(APIView):
     def post(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             LikeCreateService,
-            {"photo_id": kwargs["photo_id"], "user": request.user},
+            {"id": kwargs["id"], "user": request.user},
         )
         return Response(
             LikeCreateSerializer(outcome.result).data,
@@ -43,6 +43,6 @@ class CreateListLikesView(APIView):
     def delete(self, request, *args, **kwargs):
         ServiceOutcome(
             LikeDeleteService,
-            {"photo_id": kwargs["photo_id"]},
+            {"id": kwargs["id"]},
         )
         return Response(None, status=status.HTTP_200_OK)
