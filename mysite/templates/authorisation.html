@@ -40,8 +40,8 @@
 
 function fetchData() {
     const apiURL = 'http://127.0.0.1:8000/api/token/';
-    let username = document.getElementById("usernameId").value
-    let password = document.getElementById("passwordId").value
+    let username = document.getElementById("usernameId").value;
+    let password = document.getElementById("passwordId").value;
 
     fetch(apiURL, {method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify({"username": username, "password": password})})
         .then(response => {
@@ -51,8 +51,9 @@ function fetchData() {
             return response.json();
         })
         .then(data => {
-            localStorage.setItem("access_token", data.access)
-            localStorage.setItem("refresh_token", data.refresh)
+            localStorage.setItem("access_token", data.access);
+            localStorage.setItem("refresh_token", data.refresh);
+            windows.location.href = 'http://127.0.0.1:8000/account/';
         })
         .catch(error => {
             const container = document.getElementById('dataContainer');
