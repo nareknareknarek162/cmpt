@@ -9,26 +9,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Competition</a>
-        <div class="d-flex align-items-center">
-            {% if user.is_authenticated %}
-            <form action="/logout/" method="POST" class="me-2">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Выйти</button>
-            </form>
-            <a href="{% url 'account' %}" class="me-3">
-                <button class="btn btn-primary">Личный кабинет</button>
-            </a>
-            <div class="border-start ps-3 fs-5 text-success">
-                {{ user.username }}
-            </div>
-            {% else %}
+        <div class="d-flex align-items-center" id="authentication">
             <a href="{% url 'auth' %}" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>
             <a href="{% url 'registration' %}">
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>
-            {% endif %}
         </div>
     </div>
 </nav>
@@ -72,7 +59,7 @@
             {% endif %}
         </div>
         <p class="fw-semibold mb-1">
-            Комментариев: {{ comments.count }}
+            Комментариев: {{comments.count}}
         </p>
         <div class="d-flex flex-column align-items-start">
             {% for comment in comments %}
@@ -162,7 +149,6 @@ function fetchLikes() {
 
         const container = document.getElementById("likes");
 
-        console.log(data);
         const html = `<p>Всего лайков ${data.length}</p>`;
         container.innerHTML = html;
 
@@ -175,6 +161,47 @@ function fetchLikes() {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchLikes();
+});
+</script>
+
+<script>
+function isAuthenticated() {
+    const apiURL = "http://127.0.0.1:8000/api/user/me/";
+    const access_token = localStorage.getItem("access_token");
+
+    if (access_token) {
+        fetch(apiURL, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + access_token
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            const container = document.getElementById("authentication");
+
+            container.innerHTML = `
+                <button type="submit" class="btn btn-danger">Выйти</button>
+                <a href="{% url 'account' %}" class="me-3">
+                    <button class="btn btn-primary">Личный кабинет</button>
+                </a>
+                <div class="border-start ps-3 fs-5 text-success">
+                    ${data.username}
+                </div>`;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    isAuthenticated();
 });
 </script>
 </body>

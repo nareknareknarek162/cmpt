@@ -7,13 +7,14 @@ from rest_framework_simplejwt.views import (
 from api.views.comment import CommentListCreateView, RetrieveCommentView
 from api.views.likes import CreateLikesView, RetrieveListLikesView
 from api.views.photo import PhotoDetailView, PhotoListCreateView
-from api.views.user import RetrieveUserView, UserListCreateView
+from api.views.user import RetrieveUserTokenView, RetrieveUserView, UserListCreateView
 
 urlpatterns = [
     path("photo/", PhotoListCreateView.as_view()),
     path("photo/<int:id>/", PhotoDetailView.as_view()),
     path("user/<int:id>/", RetrieveUserView.as_view()),
     path("user/", UserListCreateView.as_view()),
+    path("user/me/", RetrieveUserTokenView.as_view()),
     path("like/photo/<int:id>/", CreateLikesView.as_view()),
     path("like/photo/<int:id>/list/", RetrieveListLikesView.as_view()),
     path("comment/<int:id>/", RetrieveCommentView.as_view()),

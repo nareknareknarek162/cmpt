@@ -34,3 +34,9 @@ SHOW_USER_LIST: DocsDict = {
     "description": "Show list of all Users",
     "responses": {200: UserShowSerializer},
 }
+
+SHOW_USER_BY_TOKEN: DocsDict = {
+    "tags": ["user"],
+    "description": "Get currently authenticated user by Token",
+    "responses": {200: UserShowSerializer},
+}

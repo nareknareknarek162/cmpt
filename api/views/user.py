@@ -5,13 +5,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
 
-from api.docs.user import CREATE_USER, DELETE_USER, SHOW_USER, UPDATE_USER, SHOW_USER_LIST
+from api.docs.user import (
+    CREATE_USER,
+    DELETE_USER,
+    SHOW_USER,
+    SHOW_USER_BY_TOKEN,
+    SHOW_USER_LIST,
+    UPDATE_USER,
+)
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.show import UserShowSerializer
 from api.services.user.create import UserCreateService
 from api.services.user.delete import UserDeleteService
 from api.services.user.show import UserShowService
 from api.services.user.showlist import UserListShowService
+from api.services.user.tokenshow import UserTokenShowService
 from api.services.user.update import UserUpdateService
 
 
@@ -28,7 +36,7 @@ class RetrieveUserView(APIView):
     @extend_schema(**DELETE_USER)
     def delete(self, request, *args, **kwargs):
 
-        outcome = ServiceOutcome(UserDeleteService, {"id": kwargs["id"]})
+        ServiceOutcome(UserDeleteService, {"id": kwargs["id"]})
         return Response(None, status=status.HTTP_200_OK)
 
     @extend_schema(**UPDATE_USER)
@@ -45,7 +53,8 @@ class UserListCreateView(APIView):
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(UserListShowService, {})
         return Response(
-            UserShowSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK
+            UserShowSerializer(outcome.result, many=True).data,
+            status=status.HTTP_200_OK,
         )
 
     @extend_schema(**CREATE_USER)
@@ -53,4 +62,15 @@ class UserListCreateView(APIView):
         outcome = ServiceOutcome(UserCreateService, request.data)
         return Response(
             UserCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
+        )
+
+
+class RetrieveUserTokenView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @extend_schema(**SHOW_USER_BY_TOKEN)
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(UserTokenShowService, {"user": request.user})
+        return Response(
+            UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
         )
