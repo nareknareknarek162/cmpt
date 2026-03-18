@@ -58,7 +58,7 @@ class PhotoListCreateView(APIView):
     def post(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             PhotoCreateService,
-            request.data | {"author_id": request.user},
+            request.data | {"author": request.user},
             request.FILES,
         )
         return Response(

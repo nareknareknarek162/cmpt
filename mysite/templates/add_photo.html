@@ -8,26 +8,63 @@
 <body>
 <div class="container mt-4">
     <h2>Добавить фото</h2>
-    <form action="/photos/add" method="POST" enctype="multipart/form-data" class="mt-3">
+    <form action="http://127.0.0.1:8000/api/photo" method="POST" enctype="multipart/form-data" class="mt-3">
         {% csrf_token %}
 
         <div class="mb-3">
             <label class="form-label">Фото</label>
-            {{ form.image }}
+            {{form.image}}
         </div>
 
         <div class="mb-3">
             <label class="form-label">Название</label>
-            {{ form.title }}
+            {{form.title}}
         </div>
 
         <div class="mb-3">
             <label class="form-label">Описание</label>
-            {{ form.description }}
+            {{form.description}}
         </div>
 
         <button type="submit" class="btn btn-success">Загрузить</button>
     </form>
 </div>
+
+<script>
+function fetchData() {
+    const apiURL = 'http://127.0.0.1:8000/api/photo/';
+    let access_token = localStorage.getItem("access_token");
+
+    const photoData = new FormData();
+    photoData.append("title", document.getElementById("photo-title").value);
+    photoData.append("description", document.getElementById("photo-description").value);
+    photoData.append("image", document.getElementById("photo-image").files[0]);
+
+    fetch(apiURL, {method: "POST",
+        headers: {"Accept": "application/json",
+                "Authorization": `Bearer ${access_token}`},
+        body: photoData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // window.location.replace('http://127.0.0.1:8000/account/');
+        })
+        .catch(error => {
+
+        });
+}
+
+const form = document.querySelector('form');
+
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    fetchData();
+});
+</script>
 </body>
 </html>
