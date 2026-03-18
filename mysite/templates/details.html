@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 function isAuthenticated() {
-    const apiURL = "http://127.0.0.1:8000/api/user/me/";
+    const apiURL = "http://127.0.0.1:8000/api/user/current/";
     const access_token = localStorage.getItem("access_token");
 
     if (access_token) {

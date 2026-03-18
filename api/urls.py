@@ -14,7 +14,7 @@ urlpatterns = [
     path("photo/<int:id>/", PhotoDetailView.as_view()),
     path("user/<int:id>/", RetrieveUserView.as_view()),
     path("user/", UserListCreateView.as_view()),
-    path("user/me/", RetrieveUserTokenView.as_view()),
+    path("user/current/", RetrieveUserTokenView.as_view()),
     path("like/photo/<int:id>/", CreateLikesView.as_view()),
     path("like/photo/<int:id>/list/", RetrieveListLikesView.as_view()),
     path("comment/<int:id>/", RetrieveCommentView.as_view()),
