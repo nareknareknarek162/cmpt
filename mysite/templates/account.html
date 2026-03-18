@@ -20,52 +20,77 @@
         </a>
     </div>
 </div>
+<div class="d-flex justify-content-end pe-5">
+  <select class="form-select w-auto" id="state">
+    <option value="approved">Опубликованные фото</option>
+    <option value="on_moderation">На модерации</option>
+    <option value="on_delete">Фото к удалению</option>
+  </select>
+</div>
 <div class="container mb-4">
-    <h5 class="mb-3">Опубликованные фото</h5>
-    <div class="row">
-        {% for photo in photos %}
-        {% if photo.state == "approved" %}
-        <div class="col-6 col-md-4 mb-3">
-            <a href="{% url 'details' photo.pk %}">
-                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
-                     style="max-width:200px;">
-            </a>
-        </div>
-        {% endif %}
-        {% endfor %}
+    <h5 class="mb-3">Мои фотографии</h5>
+    <div class="row" id="photos">
     </div>
 </div>
+<script>
+const select = document.getElementById("state");
+let photosData = []; // храним данные после fetch
 
-<div class="container mb-4">
-    <h5 class="mb-3">Фото на модерации</h5>
-    <div class="row">
-        {% for photo in photos %}
-        {% if photo.state == "on_moderation" %}
-        <div class="col-6 col-md-4 mb-3">
-            <a href="{% url 'details' photo.pk %}">
-                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
-                     style="max-width:200px;">
-            </a>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </div>
-</div>
+function renderPhotos(data, status) {
+    const container = document.getElementById("photos");
+    container.innerHTML = "";
 
-<div class="container mb-4">
-    <h5 class="mb-3">Фото к удалению</h5>
-    <div class="row">
-        {% for photo in photos %}
-        {% if photo.state == "on_delete" %}
-        <div class="col-6 col-md-4 mb-3">
-            <a href="{% url 'details' photo.pk %}">
-                <img src="{{ photo.image.url }}" title="{{ photo.description }}" class="img-fluid rounded"
-                     style="max-width:200px;">
-            </a>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </div>
-</div>
+    data.forEach(photo => {
+        if (photo.state === status) {
+            const html = `
+                <div class="col-6 col-md-4 mb-3">
+                    <a href="http://127.0.0.1:8000/photo/${photo.id}/">
+                        <img src="${photo.image}"
+                             title="${photo.description}"
+                             class="img-fluid rounded"
+                             style="max-width:200px;">
+                    </a>
+                </div>
+            `;
+            container.innerHTML += html;
+        }
+    });
+}
+
+function fetchPhotos() {
+    const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
+    let access_token = localStorage.getItem("access_token");
+
+    fetch(apiURL, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        photosData = data; // сохраняем
+        renderPhotos(photosData, select.value); // первый рендер
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+
+select.addEventListener("change", (e) => {
+    const status = e.target.value;
+    renderPhotos(photosData, status);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPhotos();
+});
+</script>
 </body>
 </html>
