@@ -56,7 +56,11 @@ class PhotoListCreateView(APIView):
 
     @extend_schema(**CREATE_PHOTO)
     def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PhotoCreateService, request.data, request.FILES)
+        outcome = ServiceOutcome(
+            PhotoCreateService,
+            request.data | {"author_id": request.user},
+            request.FILES,
+        )
         return Response(
             PhotoShowSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
