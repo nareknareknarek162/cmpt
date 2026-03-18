@@ -1,36 +1,44 @@
 from django import forms
 from django.db.models import Count, Q
+from rest_framework import status
+from service_objects.errors import AuthenticationFailed
+from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
-from models_app.models import Photo
+from models_app.models import Photo, User
 
 
 class PhotoListShowService(ServiceWithResult):
     search = forms.CharField(required=False)
     sort = forms.CharField(required=False)
     order = forms.CharField(required=False)
+    mine = forms.BooleanField(required=False)
+    user = ModelField(User, required=False)
+
+    custom_validations = ["_validate_user_presence"]
 
     def process(self):
-        query = self._photos()
-        query = self._search(query)
-        query = self._sort(query)
-        self.result = query
+        self.run_custom_validations()
+        if self.is_valid():
+            self.result = self._sorted_photo()
         return self
 
-    def _photos(self):
-        return Photo.objects.all()
-
-    def _search(self, queryset):
+    def _filtered_photos(self):
+        queryset = Photo.objects.all()
         search = self.cleaned_data.get("search")
+        mine = self.cleaned_data.get("mine")
         if search:
             queryset = queryset.filter(
                 Q(description__icontains=search)
                 | Q(author__username__icontains=search)
                 | Q(title__icontains=search)
             )
+        if mine:
+            queryset = queryset.filter(author=self.cleaned_data["user"])
         return queryset
 
-    def _sort(self, queryset):
+    def _sorted_photo(self):
+        queryset = self._filtered_photos()
         sorting_feature = self.cleaned_data.get("sort")
         order = self.cleaned_data.get("order")
 
@@ -47,3 +55,13 @@ class PhotoListShowService(ServiceWithResult):
                 queryset = queryset.order_by("publication_date")
 
         return queryset
+
+    def _validate_user_presence(self):
+        if self.cleaned_data.get("mine") and not self.cleaned_data.get("user"):
+            self.add_error(
+                "mine",
+                AuthenticationFailed(
+                    message="Для просмотра своих фотографий требуется авторизация"
+                ),
+            )
+            self.response_status = status.HTTP_401_UNAUTHORIZED

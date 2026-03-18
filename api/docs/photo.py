@@ -31,7 +31,7 @@ SHOW_LIST_PHOTO: DocsDict = {
             location=OpenApiParameter.QUERY,
             required=False,
             description="Order of sorting",
-            enum=["-", ""],
+            enum=["-"],
         ),
         OpenApiParameter(
             name="search",
@@ -39,6 +39,14 @@ SHOW_LIST_PHOTO: DocsDict = {
             location=OpenApiParameter.QUERY,
             required=False,
             description="Search string in username/title/description",
+        ),
+        OpenApiParameter(
+            name="mine",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Show photos only owned by currently authorised user",
+            enum=["true"],
         ),
     ],
 }
