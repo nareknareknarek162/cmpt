@@ -53,7 +53,7 @@ function fetchData() {
         .then(data => {
             localStorage.setItem("access_token", data.access);
             localStorage.setItem("refresh_token", data.refresh);
-            windows.location.href = 'http://127.0.0.1:8000/account/';
+            window.location.replace('http://127.0.0.1:8000/account/');
         })
         .catch(error => {
             const container = document.getElementById('dataContainer');

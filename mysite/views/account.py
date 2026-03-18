@@ -9,5 +9,5 @@ class AccountView(ListView):
     template_name = "account.html"
     context_object_name = "photos"
 
-    def get_queryset(self):
-        return Photo.objects.filter(author=self.request.user)
+    #def get_queryset(self):
+    #    return Photo.objects.filter(author=self.request.user)
