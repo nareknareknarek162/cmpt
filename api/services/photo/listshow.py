@@ -1,10 +1,12 @@
 from django import forms
+from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
 from rest_framework import status
 from service_objects.errors import AuthenticationFailed
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
+import config.settings.restframework as settings
 from models_app.models import Photo, User
 
 
@@ -14,14 +16,30 @@ class PhotoListShowService(ServiceWithResult):
     order = forms.CharField(required=False)
     mine = forms.BooleanField(required=False)
     user = ModelField(User, required=False)
+    page = forms.IntegerField(required=False, min_value=1, initial=1)
+    per_page = forms.IntegerField(required=False, min_value=1, max_value=100, initial=6)
 
     custom_validations = ["_validate_user_presence"]
 
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self.result = self._sorted_photo()
+            self.result = self._photos()
         return self
+
+    def _photos(self):
+        try:
+            return Paginator(
+                self._sorted_photo(),
+                per_page=self.cleaned_data.get("per_page")
+                or settings.REST_FRAMEWORK["PAGE_SIZE"],
+            ).page(self.cleaned_data.get("page") or 1)
+        except EmptyPage:
+            return Paginator(
+                Photo.objects.none(),
+                per_page=self.cleaned_data.get("per_page")
+                or settings.REST_FRAMEWORK["PAGE_SIZE"],
+            ).page(1)
 
     def _filtered_photos(self):
         queryset = Photo.objects.all()

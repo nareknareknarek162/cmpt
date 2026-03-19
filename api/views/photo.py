@@ -20,6 +20,7 @@ from api.services.photo.delete import PhotoDeleteService
 from api.services.photo.listshow import PhotoListShowService
 from api.services.photo.show import PhotoShowService
 from api.services.photo.update import PhotoUpdateService
+from utils.pagination import CustomPagination
 
 
 class PhotoDetailView(APIView):
@@ -69,10 +70,19 @@ class PhotoListCreateView(APIView):
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             PhotoListShowService,
-            request.query_params
+            request.query_params.dict()
             | {"user": request.user if request.user.is_authenticated else None},
         )
         return Response(
-            PhotoShowSerializer(outcome.result, many=True).data,
+            {
+                "pagination": CustomPagination(
+                    outcome.result,
+                    current_page=outcome.service.cleaned_data["page"],
+                    per_page=outcome.service.cleaned_data["per_page"],
+                ).to_json(),
+                "results": PhotoShowSerializer(
+                    outcome.result.object_list, many=True
+                ).data,
+            },
             status=status.HTTP_200_OK,
         )

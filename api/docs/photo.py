@@ -48,6 +48,20 @@ SHOW_LIST_PHOTO: DocsDict = {
             description="Show photos only owned by currently authorised user",
             enum=["true"],
         ),
+        OpenApiParameter(
+            name="page",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="page number",
+        ),
+        OpenApiParameter(
+            name="per_page",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="objects per page",
+        ),
     ],
 }
 DELETE_PHOTO: DocsDict = {
