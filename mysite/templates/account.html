@@ -35,7 +35,7 @@
 </div>
 <script>
 const select = document.getElementById("state");
-let photosData = []; // храним данные после fetch
+let photosData = [];
 
 function renderPhotos(data, status) {
     const container = document.getElementById("photos");
@@ -45,7 +45,7 @@ function renderPhotos(data, status) {
         if (photo.state === status) {
             const html = `
          <div class="col-6 col-md-4 mb-3">
-          <div class="position-relative d-inline-block">
+          <div class="position-relative d-inline-block" id="${photo.id}">
             <a href="http://127.0.0.1:8000/photo/${photo.id}/">
             <img src="${photo.image}"
                  title="${photo.description}"
@@ -59,7 +59,7 @@ function renderPhotos(data, status) {
 
               <ul class="dropdown-menu">
                 <li><button class="dropdown-item delete-btn" data-id="${photo.id}">Удалить</button></li>
-                <li><button class="dropdown-item delete-btn" data-id="${photo.id}">Редактировать</button></li>
+                <li><button class="dropdown-item edit-btn" data-id="${photo.id}">Редактировать</button></li>
               </ul>
             </div>
           </div>
@@ -87,8 +87,8 @@ function fetchPhotos() {
         return response.json();
     })
     .then(data => {
-        photosData = data; // сохраняем
-        renderPhotos(photosData, select.value); // первый рендер
+        photosData = data;
+        renderPhotos(photosData, select.value);
     })
     .catch(error => {
         console.error(error);
@@ -103,6 +103,37 @@ select.addEventListener("change", (e) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchPhotos();
+});
+
+function deletePhoto(photoId) {
+    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    let access_token = localStorage.getItem("access_token");
+
+    fetch(apiURL, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+    })
+    .then(data => {
+        const element = document.getElementById(`${photoId}`);
+        element.remove();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+document.addEventListener('click', (event) => {
+  if (event.target.matches('.delete-btn')) {
+    const photoId = event.target.dataset.id;
+    deletePhoto(photoId);
+  }
 });
 </script>
 </body>
