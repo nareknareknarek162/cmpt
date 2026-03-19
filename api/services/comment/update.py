@@ -5,7 +5,7 @@ from models_app.models import Comment, User
 
 
 class CommentUpdateService(ServiceWithResult):
-    id = forms.IntegerField(required=True, min=1)
+    id = forms.IntegerField(required=True, min_value=1)
     text = forms.CharField()
 
     def process(self):
