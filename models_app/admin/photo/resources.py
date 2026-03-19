@@ -40,7 +40,7 @@ class PhotoAdmin(admin.ModelAdmin):
     ]
 
     exclude = ["image"]
-    readonly_fields = ["image_preview", "author"]
+    readonly_fields = ["image_preview", "publication_date", "author", "title"]
 
     list_display = ["title", "state", "publication_date", "author"]
     list_filter = ["state"]
