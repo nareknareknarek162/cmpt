@@ -12,7 +12,7 @@ CREATE_COMMENT: DocsDict = {
     "tags": ["comment"],
     "description": "Create Comment by Photo Id",
     "request": CommentCreateSerializer,
-    "responses": {200: CommentShowSerializer},
+    "responses": {201: CommentShowSerializer},
 }
 
 DELETE_COMMENT: DocsDict = {
@@ -23,5 +23,12 @@ DELETE_COMMENT: DocsDict = {
 SHOW_COMMENTS_LIST: DocsDict = {
     "tags": ["comment"],
     "description": "Show all Comments",
+    "responses": {200: CommentShowSerializer},
+}
+
+PATCH_COMMENT: DocsDict = {
+    "tags": ["comment"],
+    "description": "Update comment by Id",
+    "request": CommentCreateSerializer,
     "responses": {200: CommentShowSerializer},
 }

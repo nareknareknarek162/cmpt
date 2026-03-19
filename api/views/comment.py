@@ -8,6 +8,7 @@ from service_objects.services import ServiceOutcome
 from api.docs.comment import (
     CREATE_COMMENT,
     DELETE_COMMENT,
+    PATCH_COMMENT,
     SHOW_COMMENT,
     SHOW_COMMENTS_LIST,
 )
@@ -17,6 +18,7 @@ from api.services.comment.commentlist import CommentShowListService
 from api.services.comment.create import CommentCreateService
 from api.services.comment.delete import CommentDeleteService
 from api.services.comment.show import CommentShowService
+from api.services.comment.update import CommentUpdateService
 
 
 class RetrieveCommentView(APIView):
@@ -25,6 +27,13 @@ class RetrieveCommentView(APIView):
     @extend_schema(**SHOW_COMMENT)
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(CommentShowService, {"id": kwargs["id"]})
+        return Response(
+            CommentShowSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
+
+    @extend_schema(**PATCH_COMMENT)
+    def patch(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(CommentUpdateService, {"id": kwargs["id"]})
         return Response(
             CommentShowSerializer(outcome.result).data, status=status.HTTP_200_OK
         )
