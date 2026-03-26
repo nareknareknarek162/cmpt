@@ -62,6 +62,14 @@ SHOW_LIST_PHOTO: DocsDict = {
             required=False,
             description="objects per page",
         ),
+        OpenApiParameter(
+            name="state",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="get photos by status",
+            enum=["approved", "on_moderation", "rejected"],
+        ),
     ],
 }
 DELETE_PHOTO: DocsDict = {

@@ -18,6 +18,7 @@ class PhotoListShowService(ServiceWithResult):
     user = ModelField(User, required=False)
     page = forms.IntegerField(required=False, min_value=1, initial=1)
     per_page = forms.IntegerField(required=False, min_value=1, max_value=100, initial=6)
+    state = forms.CharField(required=False)
 
     custom_validations = ["_validate_user_presence"]
 
@@ -45,6 +46,7 @@ class PhotoListShowService(ServiceWithResult):
         queryset = Photo.objects.all()
         search = self.cleaned_data.get("search")
         mine = self.cleaned_data.get("mine")
+        state = self.cleaned_data.get("state")
         if search:
             queryset = queryset.filter(
                 Q(description__icontains=search)
@@ -53,6 +55,8 @@ class PhotoListShowService(ServiceWithResult):
             )
         if mine:
             queryset = queryset.filter(author=self.cleaned_data["user"])
+        if state:
+            queryset = queryset.filter(state=self.cleaned_data["state"])
         return queryset
 
     def _sorted_photo(self):
