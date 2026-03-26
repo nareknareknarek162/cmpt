@@ -5,5 +5,5 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "EXCEPTION_HANDLER": "utils.exception_handler.drf_exception_response",
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 6,
 }
