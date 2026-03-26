@@ -42,15 +42,28 @@
 </div>
 <script>
 const select = document.getElementById("state");
-let photosData = [];
 
-function renderPhotos(data, status) {
-    const container = document.getElementById("photos");
-    container.innerHTML = "";
+function fetchPhotos(state="approved") {
+    const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
+    let access_token = localStorage.getItem("access_token");
 
-    data.forEach(photo => {
-        if (photo.state === status) {
-            const html = `
+    fetch(`${apiURL}&state=${state}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const container = document.getElementById("photos");
+        container.innerHTML = "";
+        data["results"].forEach(photo => {
+        const html = `
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
             <a href="http://127.0.0.1:8000/photo/${photo.id}/">
@@ -73,29 +86,9 @@ function renderPhotos(data, status) {
         </div>
             `;
             container.innerHTML += html;
-        }
+
     });
-}
-
-function fetchPhotos() {
-    const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
-    let access_token = localStorage.getItem("access_token");
-
-    fetch(apiURL, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${access_token}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        photosData = data;
-        renderPhotos(photosData, select.value);
+        
     })
     .catch(error => {
         console.error(error);
@@ -105,7 +98,7 @@ function fetchPhotos() {
 
 select.addEventListener("change", (e) => {
     const status = e.target.value;
-    renderPhotos(photosData, status);
+    fetchPhotos(status);
 });
 
 function deletePhoto(photoId) {
@@ -139,7 +132,7 @@ document.addEventListener('click', (event) => {
   }
 });
 
-function isAuthenticated() {
+function getUsername() {
     const apiURL = "http://127.0.0.1:8000/api/user/current/";
     const access_token = localStorage.getItem("access_token");
 
@@ -169,7 +162,7 @@ function isAuthenticated() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    isAuthenticated();
+    getUsername();
     fetchPhotos();
 });
 </script>

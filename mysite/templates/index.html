@@ -112,6 +112,7 @@ function fetchPhotos(page=1) {
     const params = new URLSearchParams();
     params.append("sort", sort);
     params.append("order", order);
+    params.append("state", "approved");
     if (search) params.append("search", search);
     params.append("page", page);
 
