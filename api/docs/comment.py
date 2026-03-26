@@ -22,7 +22,7 @@ DELETE_COMMENT: DocsDict = {
 }
 SHOW_COMMENTS_LIST: DocsDict = {
     "tags": ["comment"],
-    "description": "Show all Comments",
+    "description": "Show all Comments by photo Id",
     "responses": {200: CommentShowSerializer},
 }
 

@@ -14,10 +14,10 @@ from api.docs.comment import (
 )
 from api.serializers.comment.create import CommentCreateSerializer
 from api.serializers.comment.show import CommentShowSerializer
-from api.services.comment.commentlist import CommentShowListService
 from api.services.comment.create import CommentCreateService
 from api.services.comment.delete import CommentDeleteService
 from api.services.comment.show import CommentShowService
+from api.services.comment.showlist import CommentShowListService
 from api.services.comment.update import CommentUpdateService
 
 
@@ -44,7 +44,17 @@ class RetrieveCommentView(APIView):
         return Response(None, status=status.HTTP_200_OK)
 
 
-class CommentListCreateView(APIView):
+class CommentListView(APIView):
+    @extend_schema(**SHOW_COMMENTS_LIST)
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(CommentShowListService, {"id": kwargs["id"]})
+        return Response(
+            CommentShowSerializer(outcome.result, many=True).data,
+            status=status.HTTP_200_OK,
+        )
+
+
+class CommentCreateView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**CREATE_COMMENT)
@@ -55,12 +65,4 @@ class CommentListCreateView(APIView):
         )
         return Response(
             CommentCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
-        )
-
-    @extend_schema(**SHOW_COMMENTS_LIST)
-    def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CommentShowListService, {})
-        return Response(
-            CommentShowSerializer(outcome.result, many=True).data,
-            status=status.HTTP_200_OK,
         )

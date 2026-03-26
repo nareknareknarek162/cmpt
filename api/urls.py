@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from api.views.comment import CommentListCreateView, RetrieveCommentView
+from api.views.comment import CommentCreateView, CommentListView, RetrieveCommentView
 from api.views.likes import CreateLikesView, RetrieveListLikesView
 from api.views.photo import PhotoDetailView, PhotoListCreateView
 from api.views.user import RetrieveUserTokenView, RetrieveUserView, UserListCreateView
@@ -18,7 +18,8 @@ urlpatterns = [
     path("like/photo/<int:id>/", CreateLikesView.as_view()),
     path("like/photo/<int:id>/list/", RetrieveListLikesView.as_view()),
     path("comment/<int:id>/", RetrieveCommentView.as_view()),
-    path("comment/photos/", CommentListCreateView.as_view()),
+    path("comment/photo/<int:id>/", CommentCreateView.as_view()),
+    path("comment/photo/<int:id>/list/", CommentListView.as_view()),
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
