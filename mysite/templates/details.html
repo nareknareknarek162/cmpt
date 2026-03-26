@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
@@ -40,21 +42,9 @@
             {% if user.is_authenticated %}
                 <form method="POST">
                     {% csrf_token %}
-                    {% if editing %}
-                    <textarea id="text_input_update" name="comment_text" rows="5" cols="80">{{users_comment.text}}</textarea>
+                    <textarea id="text_input_update" name="comment_text" rows="5" cols="80"></textarea>
                     <button id="update_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
                             value="update">Сохранить</button>
-                    {% elif has_commented %}
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-secondary" type="submit" name="comment" value="delete">Удалить</button>
-                        <a href="?edit=1" class="btn btn-danger">Редактировать</a>
-                    </div>
-                    {% else %}
-                    <textarea id="text_input" name="comment_text" rows="5" cols="80"></textarea>
-                    <button id="send_btn" type="submit" class="btn btn-success w-50 mx-auto d-block" name="comment"
-                            value="save" disabled>Отправить
-                    </button>
-                    {% endif %}
                 </form>
             {% endif %}
         </div>
@@ -158,42 +148,55 @@ function fetchComments() {
     const id = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
 
+    fetch(apiURL, { method: "GET" })
+        .then(response => response.json())
+        .then(data => {
+            const commentsContainer = document.getElementById("comments");
+            let html = "";
 
-    fetch(apiURL, {
-        method: "GET"
-    })
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
+            data.forEach(comment => {
+                html += `
+                    <div class="card mb-1 mt-2">
+                        <div class="card-body position-relative pe-5">
 
-        const commentsContainer = document.getElementById("comments");
-        let html = "";
+                            <div class="dropdown position-absolute top-0 end-0 m-2">
+                                <button
+                                    class="btn btn-sm text-muted p-0"
+                                    data-bs-toggle="dropdown"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="bi bi-three-dots-vertical fs-5"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <button class="dropdown-item edit-comment" data-id="${comment.id}">
+                                            Редактировать
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-danger delete-comment" data-id="${comment.id}">
+                                            Удалить
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
 
-        data.forEach(comment => {
-            html += `
-                <div class="card mb-1 mt-2">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-1 text-muted">
-                            ${comment.author} | ${comment.created_at}
-                        </h6>
-                        <p class="card-text">${comment.text}</p>
+                            <h6 class="card-subtitle mb-1 text-muted">
+                                ${comment.author} | ${comment.created_at}
+                            </h6>
+
+                            <p class="card-text">${comment.text}</p>
+
+                        </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
 
-        commentsContainer.innerHTML = html;
-
-    })
-    .catch(error => {
-        console.error(error);
-    });
+            commentsContainer.innerHTML = html;
+        })
+        .catch(error => console.error(error));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchComments();
-});
+document.addEventListener("DOMContentLoaded", fetchComments);
 </script>
 <script>
 function isAuthenticated() {
