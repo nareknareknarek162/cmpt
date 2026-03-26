@@ -58,19 +58,8 @@
                 </form>
             {% endif %}
         </div>
-        <p class="fw-semibold mb-1">
-            Комментариев: {{comments.count}}
-        </p>
-        <div class="d-flex flex-column align-items-start">
-            {% for comment in comments %}
-            <div class="card mb-1 mt-2">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-1 text-muted">{{comment.author}} | {{comment.created_at}}</h6>
-                    <p class="card-text">{{comment.text}}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+        <p class="fw-semibold mb-1" id="comments-amount"></p>
+        <div class="d-flex flex-column align-items-start" id="comments"></div>
     </div>
 </div>
 <script>
@@ -164,6 +153,48 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+function fetchComments() {
+    const id = window.location.pathname.split("/")[2];
+    const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
+
+
+    fetch(apiURL, {
+        method: "GET"
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+
+        const commentsContainer = document.getElementById("comments");
+        let html = "";
+
+        data.forEach(comment => {
+            html += `
+                <div class="card mb-1 mt-2">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-1 text-muted">
+                            ${comment.author} | ${comment.created_at}
+                        </h6>
+                        <p class="card-text">${comment.text}</p>
+                    </div>
+                </div>
+            `;
+        });
+
+        commentsContainer.innerHTML = html;
+
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchComments();
+});
+</script>
 <script>
 function isAuthenticated() {
     const apiURL = "http://127.0.0.1:8000/api/user/current/";
