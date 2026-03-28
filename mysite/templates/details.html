@@ -53,26 +53,6 @@
     </div>
 </div>
 <script>
-    const input = document.getElementById('text_input');
-    const input_update = document.getElementById('text_input_update');
-    const btn_send = document.getElementById('send_btn');
-    const btn_update = document.getElementById('update_btn');
-
-    if (input) {
-        input.addEventListener('input', () => {
-            const hasText = input.value.trim().length > 0;
-            btn_send.disabled = !hasText;
-        });
-    }
-
-    if (input_update) {
-        input_update.addEventListener('input', () => {
-            const hasText = input_update.value.trim().length > 0;
-            btn_update.disabled = !hasText;
-        });
-    }
-</script>
-<script>
 function fetchPhoto() {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
