@@ -12,10 +12,10 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Competition</a>
         <div class="d-flex align-items-center" id="authentication">
-            <a href="{% url 'auth' %}" class="me-2">
+            <a href="auth/" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>
-            <a href="{% url 'registration' %}">
+            <a href="/registrate">
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>
         </div>
@@ -24,14 +24,9 @@
 
 <div id="photo"></div>
 <br>
-<form method="POST" class="text-center mt-3">
-    {% csrf_token %}
-    {% if is_liked %}
-    <button type="submit" class="btn btn-primary" name="like">Убрать лайк</button>
-    {% else %}
-    <button type="submit" class="btn btn-primary" name="like">Лайк</button>
-    {% endif %}
-</form>
+<div class="text-center mt-3">
+    <button type="submit" class="btn btn-primary text-center mt-3" name="like">Лайкнуть</button>
+</div>
 
 <p class="text-center mt-2" id="likes"></p>
 

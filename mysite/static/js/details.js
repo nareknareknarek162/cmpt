@@ -57,6 +57,31 @@ function fetchLikes() {
         });
 }
 
+function fetchLikes() {
+    const id = window.location.pathname.split("/")[2];
+    const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/list/`;
+
+
+    fetch(apiURL, {
+            method: "GET"
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+
+            const container = document.getElementById("likes");
+
+            const html = `<p>Всего лайков ${data.length}</p>`;
+            container.innerHTML = html;
+
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
 function fetchComments() {
     const id = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
