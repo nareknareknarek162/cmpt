@@ -83,7 +83,8 @@ function fetchComments() {
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <button class="dropdown-item edit-comment" data-id="${comment.id}">
+                                        <button class="dropdown-item edit-comment" data-id="${comment.id}"
+                                        data-bs-toggle="modal" data-bs-target="#myModal">
                                             Редактировать
                                         </button>
                                     </li>
@@ -103,7 +104,8 @@ function fetchComments() {
 
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button class="btn text-muted p-0 reply-comment" data-id="${comment.id}">
+                            <button class="btn text-muted p-0 reply-comment" data-id="${comment.id}" data-bs-target="#myModal"
+                            data-bs-toggle="modal">
                                 <i class="bi bi-reply fs-4"></i>
                             </button>
                         </div>
