@@ -6,21 +6,19 @@ from models_app.models import Comment, User
 
 
 class CommentCreateService(ServiceWithResult):
-    photo = forms.IntegerField(required=True)
+    id = forms.IntegerField(required=True, min_value=1)
     author = ModelField(User)
-    text = forms.CharField()
-    created_at = forms.CharField()
+    text = forms.CharField(required=True)
 
     def process(self):
-        self.result = self._create_photo()
+        self.result = self._create_comment()
         return self
 
-    def _create_photo(self):
+    def _create_comment(self):
         comment = Comment.objects.create(
-            author=self.cleaned_data["author"],
-            photo=self.cleaned_data["photo"],
+            author_id=self.cleaned_data["author"].id,
+            photo_id=self.cleaned_data["id"],
             text=self.cleaned_data["text"],
-            created_at=self.cleaned_data["created_at"],
         )
 
         return comment

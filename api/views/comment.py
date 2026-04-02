@@ -12,7 +12,6 @@ from api.docs.comment import (
     SHOW_COMMENT,
     SHOW_COMMENTS_LIST,
 )
-from api.serializers.comment.create import CommentCreateSerializer
 from api.serializers.comment.show import CommentShowSerializer
 from api.services.comment.create import CommentCreateService
 from api.services.comment.delete import CommentDeleteService
@@ -61,8 +60,8 @@ class CommentCreateView(APIView):
     def post(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
             CommentCreateService,
-            {"id": kwargs["id"], "user": request.id} | request.data,
+            {"id": kwargs["id"], "author": request.user} | request.data,
         )
         return Response(
-            CommentCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
+            CommentShowSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
