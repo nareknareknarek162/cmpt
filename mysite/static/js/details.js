@@ -4,32 +4,32 @@ function fetchPhoto() {
 
 
     fetch(apiURL, {
-        method: "GET"
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
+            method: "GET"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
 
-        const container = document.getElementById("photo");
+            const container = document.getElementById("photo");
 
-        const html = `
-            <p class="text-center fw-semibold fs-2">${data.title }</p>
+            const html = `
+            <p class="text-center fw-semibold fs-2">${data.title}</p>
             <img src="${data.image}" class="rounded mx-auto d-block">
             <p class="text-center">${data.description}</p>
             <p class="text-center">Автор: ${data.author}</p>
             <p class="text-center">Загружено: ${data.publication_date}</p>
             `;
-        container.innerHTML += html;
+            container.insertAdjacentHTML('beforeend', html);
 
 
-    })
-    .catch(error => {
-        console.error(error);
-    });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 function fetchLikes() {
@@ -38,30 +38,32 @@ function fetchLikes() {
 
 
     fetch(apiURL, {
-        method: "GET"
-    })
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
+            method: "GET"
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
 
-        const container = document.getElementById("likes");
+            const container = document.getElementById("likes");
 
-        const html = `<p>Всего лайков ${data.length}</p>`;
-        container.innerHTML = html;
+            const html = `<p>Всего лайков ${data.length}</p>`;
+            container.innerHTML = html;
 
 
-    })
-    .catch(error => {
-        console.error(error);
-    });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 function fetchComments() {
     const id = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
 
-    fetch(apiURL, { method: "GET" })
+    fetch(apiURL, {
+            method: "GET"
+        })
         .then(response => response.json())
         .then(data => {
             const commentsContainer = document.getElementById("comments");
@@ -116,10 +118,52 @@ function isAuthenticated() {
 
     if (access_token) {
         fetch(apiURL, {
-            method: "GET",
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + access_token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                const container = document.getElementById("authentication");
+
+                container.innerHTML = `
+                <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
+                <a href="{% url 'account' %}" class="me-3">
+                    <button class="btn btn-primary">Личный кабинет</button>
+                </a>
+                <div class="border-start ps-3 fs-5 text-success">
+                    ${data.username}
+                </div>`;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+}
+
+function sendComment() {
+    const photoId = window.location.pathname.split("/")[2];
+    const apiURL = `http://127.0.0.1:8000/api/comment/photo/${photoId}/`;
+
+    comment_text = document.getElementById("comment_text").value;
+    let access_token = localStorage.getItem("access_token");
+
+    fetch(apiURL, {
+            method: "POST",
             headers: {
-                "Authorization": "Bearer " + access_token
-            }
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`
+            },
+            body: JSON.stringify({
+                "text": comment_text
+            })
         })
         .then(response => {
             if (!response.ok) {
@@ -128,22 +172,11 @@ function isAuthenticated() {
             return response.json();
         })
         .then(data => {
-
-            const container = document.getElementById("authentication");
-
-            container.innerHTML = `
-                <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
-                <a href="{% url 'account' %}" class="me-3">
-                    <button class="btn btn-primary">Личный кабинет</button>
-                </a>
-                <div class="border-start ps-3 fs-5 text-success">
-                    ${data.username}
-                </div>`;
+            console.log("success");
         })
         .catch(error => {
             console.error(error);
         });
-    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -159,12 +192,16 @@ document.addEventListener("click", function(event) {
 
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        const container = document.getElementById("authentication").innerHTML = `<a href="{% url 'auth' %}" class="me-2">
+        const container = document.getElementById("authentication").innerHTML = `<a href="auth/" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>
-            <a href="{% url 'registration' %}">
+            <a href="registration/">
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>`;
+    }
+
+    if (event.target.id === "sendCommentBtn") {
+        sendComment();
     }
 
 });
