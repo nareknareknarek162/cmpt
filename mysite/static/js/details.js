@@ -192,7 +192,8 @@ document.addEventListener("click", function(event) {
 
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        const container = document.getElementById("authentication").innerHTML = `<a href="auth/" class="me-2">
+        const container = document.getElementById("authentication")
+        container.innerHTML += `<a href="auth/" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>
             <a href="registration/">
