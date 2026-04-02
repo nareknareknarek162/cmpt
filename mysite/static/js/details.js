@@ -102,6 +102,11 @@ function fetchComments() {
                             <p class="card-text">${comment.text}</p>
 
                         </div>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn text-muted p-0 reply-comment" data-id="${comment.id}">
+                                <i class="bi bi-reply fs-4"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -186,23 +191,28 @@ document.addEventListener("DOMContentLoaded", () => {
     isAuthenticated();
 });
 
-document.addEventListener("click", function(event) {
 
-    if (event.target.id === "logoutBtn") {
+const logoutBtn = document.getElementById("logoutBtn");
+const sendCommentBtn = document.getElementById("sendCommentBtn");
 
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", function() {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        const container = document.getElementById("authentication")
-        container.innerHTML += `<a href="auth/" class="me-2">
-                <button class="btn btn-primary">Войти</button>
-            </a>
-            <a href="registration/">
-                <button class="btn btn-secondary">Зарегистрироваться</button>
-            </a>`;
-    }
 
-    if (event.target.id === "sendCommentBtn") {
-        sendComment();
-    }
+        const container = document.getElementById("authentication");
+        if (container) {
+            container.innerHTML += `
+                <a href="auth/" class="me-2">
+                    <button class="btn btn-primary">Войти</button>
+                </a>
+                <a href="registration/">
+                    <button class="btn btn-secondary">Зарегистрироваться</button>
+                </a>`;
+        }
+    });
+}
 
-});
+if (sendCommentBtn) {
+    sendCommentBtn.addEventListener("click", sendComment);
+}
