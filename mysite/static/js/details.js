@@ -71,7 +71,7 @@ function fetchComments() {
 
             data.forEach(comment => {
                 html += `
-                    <div class="card mb-1 mt-2">
+                    <div class="card mb-1 mt-2" id="${comment.id}">
                         <div class="card-body position-relative pe-5">
 
                             <div class="dropdown position-absolute top-0 end-0 m-2">
@@ -118,6 +118,29 @@ function fetchComments() {
         .catch(error => console.error(error));
 }
 
+function deletePhoto(commentId) {
+    const apiURL = `http://127.0.0.1:8000/api/comment/${commentId}/`;
+    let access_token = localStorage.getItem("access_token");
+
+    fetch(apiURL, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+    })
+    .then(data => {
+        const element = document.getElementById(`${commentId}`);
+        element.remove();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
 
 function isAuthenticated() {
     const apiURL = "http://127.0.0.1:8000/api/user/current/";
@@ -218,3 +241,10 @@ if (logoutBtn) {
 if (sendCommentBtn) {
     sendCommentBtn.addEventListener("click", sendComment);
 }
+
+document.addEventListener('click', (event) => {
+  if (event.target.matches('.delete-comment')) {
+    const photoId = event.target.dataset.id;
+    deletePhoto(photoId);
+  }
+});
