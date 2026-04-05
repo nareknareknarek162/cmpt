@@ -7,36 +7,38 @@
 </head>
 <body>
   <div class="container mt-5" style="max-width: 400px;">
-    <form action="/registration/" method="POST">
+    <form>
         {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Имя пользователя</label>
-        <input type="text" class="form-control" name="username" autofocus>
+        <input type="text" class="form-control" name="username" autofocus required>
       </div>
       <div class="mb-3">
         <label class="form-label">Пароль</label>
-        <input type="password" class="form-control" name="password">
+        <input type="password" class="form-control" name="password" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Имя</label>
-        <input type="text" class="form-control" name="first_name">
+        <input type="text" class="form-control" name="first_name" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Фамилия</label>
-        <input type="text" class="form-control" name="last_name">
+        <input type="text" class="form-control" name="last_name" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Электронная почта</label>
-        <input type="email" class="form-control" name="email">
+        <input type="email" class="form-control" name="email" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Дата рождения</label>
-        <input type="date" class="form-control" name="birth_date">
+        <input type="date" class="form-control" name="birth_date" required>
       </div>
-      <label><input type="radio" name="gender" value="M"> Мужской</label>
-      <label><input type="radio" name="gender" value="F"> Женский</label>
+      <label><input type="radio" name="gender" value="M" id="male" required>Мужской</label>
+      <label><input type="radio" name="gender" value="F" id="female" required>Женский</label>
       <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
     </form>
 </div>
+{% load static %}
+<script src="{% static 'js/registrate.js' %}"></script>
 </body>
 </html>
