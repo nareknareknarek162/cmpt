@@ -1,7 +1,5 @@
-function fetchData() {
+function authorizeUser(username, password) {
     const apiURL = 'http://127.0.0.1:8000/api/token/';
-    let username = document.getElementById("usernameId").value;
-    let password = document.getElementById("passwordId").value;
 
     fetch(apiURL, {
             method: "POST",
@@ -31,4 +29,10 @@ function fetchData() {
         });
 }
 
-document.getElementById('fetchButton').addEventListener('click', fetchData);
+document.getElementById('fetchButton').addEventListener('click', (event) => {
+    let username = document.getElementById("usernameId").value;
+    let password = document.getElementById("passwordId").value;
+
+    event.preventDefault();
+    authorizeUser(username, password);
+ });
