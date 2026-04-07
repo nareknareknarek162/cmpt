@@ -1,4 +1,4 @@
-function authorizeUser(username, password) {
+export function authorizeUser(username, password) {
     const apiURL = 'http://127.0.0.1:8000/api/token/';
 
     fetch(apiURL, {
@@ -28,7 +28,7 @@ function authorizeUser(username, password) {
             console.error('Fetch error:', error);
         });
 }
-
+if (document.getElementById('fetchButton')){
 document.getElementById('fetchButton').addEventListener('click', (event) => {
     let username = document.getElementById("usernameId").value;
     let password = document.getElementById("passwordId").value;
@@ -36,3 +36,4 @@ document.getElementById('fetchButton').addEventListener('click', (event) => {
     event.preventDefault();
     authorizeUser(username, password);
  });
+}

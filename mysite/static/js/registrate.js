@@ -1,5 +1,7 @@
+import { authorizeUser } from './authorization.js';
+
 function registrateUser() {
-    const apiURL = 'http://127.0.0.1:8000/api/user/';
+    const apiURL =  'http://127.0.0.1:8000/api/user/';
     const form = document.querySelector("form");
 
     const userData = Object.fromEntries(new FormData(form).entries());
@@ -17,7 +19,7 @@ function registrateUser() {
             return response.json();
         })
         .then(data => {
-            // window.location.replace('http://127.0.0.1:8000/account/');
+        authorizeUser(userData.username, userData.password);
         })
         .catch(error => console.error(error));
 }
