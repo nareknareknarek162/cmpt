@@ -117,7 +117,7 @@ function isAuthenticated() {
 
                 container.innerHTML = `
                 <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
-                <a href="{% url 'account' %}" class="me-3">
+                <a href="/account/" class="me-3">
                     <button class="btn btn-primary">Личный кабинет</button>
                 </a>
                 <div class="border-start ps-3 fs-5 text-success">
@@ -139,10 +139,10 @@ document.addEventListener("click", function(event) {
 
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        const container = document.getElementById("authentication").innerHTML = `<a href="{% url 'auth' %}" class="me-2">
+        const container = document.getElementById("authentication").innerHTML = `<a href="/auth/" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>
-            <a href="{% url 'registration' %}">
+            <a href="/registration/">
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>`;
     }
