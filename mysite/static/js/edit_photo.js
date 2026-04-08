@@ -1,5 +1,3 @@
-const form = document.querySelector("form");
-
 function populatePhoto(photoId) {
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
 
@@ -47,15 +45,16 @@ function updatePhoto(photoId) {
             return response.json();
         })
         .then(data => {
-            //
+            window.location.replace('http://127.0.0.1:8000/account/');
         })
         .catch(error => {
 
         });
 }
 
-const pathParts = window.location.pathname.split('/');
-const photoId = pathParts[pathParts.length - 2];
+const form = document.querySelector("form");
+const photoId = window.location.pathname.split('/').slice(-2, -1)[0];
+
 populatePhoto(photoId);
 
 form.addEventListener('submit', (event) => {
