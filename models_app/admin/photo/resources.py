@@ -34,13 +34,20 @@ class PhotoAdmin(admin.ModelAdmin):
     fields = [
         ("author", "title"),
         "image_preview",
+        "previous_image_preview",
         "state",
         "publication_date",
         "description",
     ]
 
     exclude = ["image"]
-    readonly_fields = ["image_preview", "publication_date", "author", "title"]
+    readonly_fields = [
+        "image_preview",
+        "previous_image_preview",
+        "publication_date",
+        "author",
+        "title",
+    ]
 
     list_display = ["title", "state", "publication_date", "author"]
     list_filter = ["state"]
@@ -54,6 +61,14 @@ class PhotoAdmin(admin.ModelAdmin):
             return format_html(
                 '<img src="{}" style="max-width:100%; max-height:600px;" />',
                 obj.image.url,
+            )
+
+    @admin.display(description="Предыдущее фото")
+    def previous_image_preview(self, obj):
+        if obj.previous_image:
+            return format_html(
+                '<img src="{}" style="max-width:100%; max-height:600px;" />',
+                obj.previous_image.url,
             )
 
     def formfield_for_choice_field(self, db_field, request, **kwargs):
