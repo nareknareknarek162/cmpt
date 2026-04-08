@@ -21,6 +21,7 @@ class Photo(models.Model):
         blank=True, null=True, verbose_name="Дата и время публикации", auto_now=True
     )
     image = models.ImageField(verbose_name="Фото")
+    previous_image = models.ImageField(verbose_name="Предыдущее фото", blank=True)
 
     state = models.CharField(
         max_length=63,
