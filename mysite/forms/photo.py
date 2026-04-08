@@ -8,14 +8,29 @@ class PhotoForm(ModelForm):
     description = forms.CharField(
         max_length=511,
         required=True,
+        strip=True,
         widget=forms.Textarea(
-            attrs={"rows": 4, "class": "form-control", "id": "photo-description"}
+            attrs={
+                "rows": 4,
+                "class": "form-control",
+                "id": "photo-description",
+                "pattern": r".*\S.*",
+                "title": "Поле не должно состоять только из пробелов",
+            }
         ),
     )
     title = forms.CharField(
         max_length=127,
         required=True,
-        widget=forms.TextInput(attrs={"class": "form-control", "id": "photo-title"}),
+        strip=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "photo-title",
+                "pattern": r".*\S.*",
+                "title": "Поле не должно состоять только из пробелов",
+            }
+        ),
     )
 
     image = forms.ImageField(

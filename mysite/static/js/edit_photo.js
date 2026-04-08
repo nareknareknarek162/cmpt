@@ -24,8 +24,35 @@ function populatePhoto(photoId) {
         });
 }
 
+function updatePhoto() {
+    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    let access_token = localStorage.getItem("access_token");
+
+    const photoData = new FormData();
+    photoData.append("title", document.getElementById("photo-title").value);
+    photoData.append("description", document.getElementById("photo-description").value);
+    photoData.append("image", document.getElementById("photo-image").files[0]);
+
+    fetch(apiURL, {method: "POST",
+        headers: {"Accept": "application/json",
+                "Authorization": `Bearer ${access_token}`},
+        body: photoData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            window.location.replace('http://127.0.0.1:8000/account/');
+        })
+        .catch(error => {
+
+        });
+}
 form.addEventListener('submit', (event) => {
-    event.preventDefault();
+    console.log('sending');
 });
 
 const pathParts = window.location.pathname.split('/');
