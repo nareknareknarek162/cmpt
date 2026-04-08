@@ -55,7 +55,7 @@ class PhotoAdmin(admin.ModelAdmin):
 
     actions = [make_approved, make_rejected]
 
-    @admin.display(description="Фото")
+    @admin.display(description="Текущее фото")
     def image_preview(self, obj):
         if obj.image:
             return format_html(
@@ -67,7 +67,7 @@ class PhotoAdmin(admin.ModelAdmin):
     def previous_image_preview(self, obj):
         if obj.previous_image:
             return format_html(
-                '<img src="{}" style="max-width:100%; max-height:600px;" />',
+                '<img src="{}" style="max-width:100%; max-height:600px; opacity: 0.5;" />',
                 obj.previous_image.url,
             )
 
