@@ -35,7 +35,7 @@ function fetchPhotos(state="approved") {
               </button>
 
               <ul class="dropdown-menu">
-                <li><a href="/photos/edit/${photo.id}"class="dropdown-item edit-btn">Редактировать</a></li>
+                <li><a href="/photos/edit/${photo.id}/" class="dropdown-item edit-btn">Редактировать</a></li>
                 <li><button class="dropdown-item delete-btn text-danger" data-id="${photo.id}">Удалить</button></li>
               </ul>
             </div>
