@@ -17,5 +17,6 @@ class PhotoShowDetailSerializer(ModelSerializer):
             "description",
             "publication_date",
             "image",
+            "previous_image",
             "state",
         ]

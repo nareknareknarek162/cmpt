@@ -31,6 +31,8 @@ class PhotoUpdateService(ServiceWithResult):
         for field in ("title", "description", "image"):
             value = self.cleaned_data.get(field)
             if value not in (None, ""):
+                if field == "image":
+                    photo.previous_image = photo.image
                 setattr(photo, field, self.cleaned_data[field])
         photo.state = State.ON_MODERATION
 
