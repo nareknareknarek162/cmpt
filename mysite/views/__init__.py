@@ -2,6 +2,7 @@ from mysite.views.account import AccountView
 from mysite.views.add_photo import AddPhotoView
 from mysite.views.auth import AuthView
 from mysite.views.details import DetailedPhotoView
+from mysite.views.edit_photo import EditPhotoView
 from mysite.views.index import IndexView
 from mysite.views.registration import RegistrationView
 from mysite.views.yandex import Yandex
