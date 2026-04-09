@@ -47,6 +47,7 @@ class PhotoAdmin(admin.ModelAdmin):
         "publication_date",
         "author",
         "title",
+        "description"
     ]
 
     list_display = ["title", "state", "publication_date", "author"]
