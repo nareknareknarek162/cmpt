@@ -43,6 +43,6 @@ class CreateLikesView(APIView):
     def delete(self, request, *args, **kwargs):
         ServiceOutcome(
             LikeDeleteService,
-            {"id": kwargs["id"]},
+            {"id": kwargs["id"], "user": request.user},
         )
         return Response(None, status=status.HTTP_200_OK)
