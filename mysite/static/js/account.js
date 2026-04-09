@@ -1,4 +1,5 @@
 const select = document.getElementById("state");
+const username = localStorage.getItem("username");
 
 function fetchPhotos(state="approved") {
     const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
@@ -76,37 +77,12 @@ function deletePhoto(photoId) {
     });
 }
 
-function getUsername() {
-    const apiURL = "http://127.0.0.1:8000/api/user/current/";
-    const access_token = localStorage.getItem("access_token");
-
-    if (access_token) {
-        fetch(apiURL, {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + access_token
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-
-            const container = document.getElementById("username");
-
-            container.innerHTML = `${data.username}`;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
+if (username) {
+    const container = document.getElementById("username");
+    container.innerHTML = `${username}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    getUsername();
     fetchPhotos();
 });
 

@@ -20,6 +20,7 @@ export function authorizeUser(username, password) {
         .then(data => {
             localStorage.setItem("access_token", data.access);
             localStorage.setItem("refresh_token", data.refresh);
+            localStorage.setItem("username", username);
             window.location.replace('http://127.0.0.1:8000/account/');
         })
         .catch(error => {

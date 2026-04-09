@@ -1,3 +1,5 @@
+const username = localStorage.getItem("username");
+
 function fetchPhotos(page=1) {
     const apiURL = 'http://127.0.0.1:8000/api/photo/';
 
@@ -94,44 +96,18 @@ document.addEventListener("click", (e) => {
     }
 });
 
-function isAuthenticated() {
-    const apiURL = "http://127.0.0.1:8000/api/user/current/";
-    const access_token = localStorage.getItem("access_token");
+if (username) {
+    const container = document.getElementById("authentication");
 
-    if (access_token) {
-        fetch(apiURL, {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + access_token
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-
-                const container = document.getElementById("authentication");
-
-                container.innerHTML = `
-                <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
-                <a href="/account/" class="me-3">
-                    <button class="btn btn-primary">Личный кабинет</button>
-                </a>
-                <div class="border-start ps-3 fs-5 text-success">
-                    ${data.username}
-                </div>`;
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
+    container.innerHTML = `
+    <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
+    <a href="/account/" class="me-3">
+        <button class="btn btn-primary">Личный кабинет</button>
+    </a>
+    <div class="border-start ps-3 fs-5 text-success">
+        ${username}
+    </div>`;
 }
-document.addEventListener("DOMContentLoaded", () => {
-    isAuthenticated();
-});
 
 document.addEventListener("click", function(event) {
 
@@ -139,6 +115,7 @@ document.addEventListener("click", function(event) {
 
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
+        localStorage.removeItem("username");
         const container = document.getElementById("authentication").innerHTML = `<a href="/auth/" class="me-2">
                 <button class="btn btn-primary">Войти</button>
             </a>

@@ -142,41 +142,6 @@ function deletePhoto(commentId) {
     });
 }
 
-function isAuthenticated() {
-    const apiURL = "http://127.0.0.1:8000/api/user/current/";
-    const access_token = localStorage.getItem("access_token");
-
-    if (access_token) {
-        fetch(apiURL, {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + access_token
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-
-                const container = document.getElementById("authentication");
-
-                container.innerHTML = `
-                <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
-                <a href="{% url 'account' %}" class="me-3">
-                    <button class="btn btn-primary">Личный кабинет</button>
-                </a>
-                <div class="border-start ps-3 fs-5 text-success">
-                    ${data.username}
-                </div>`;
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-}
 
 function sendComment() {
     const photoId = window.location.pathname.split("/")[2];
@@ -213,29 +178,24 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchPhoto();
     fetchLikes();
     fetchComments();
-    isAuthenticated();
 });
 
 
 const logoutBtn = document.getElementById("logoutBtn");
 const sendCommentBtn = document.getElementById("sendCommentBtn");
+const username = localStorage.getItem("username");
 
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", function() {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+if (username) {
+    const container = document.getElementById("authentication");
 
-        const container = document.getElementById("authentication");
-        if (container) {
-            container.innerHTML += `
-                <a href="auth/" class="me-2">
-                    <button class="btn btn-primary">Войти</button>
-                </a>
-                <a href="registration/">
-                    <button class="btn btn-secondary">Зарегистрироваться</button>
-                </a>`;
-        }
-    });
+    container.innerHTML = `
+    <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
+    <a href="/account/" class="me-3">
+        <button class="btn btn-primary">Личный кабинет</button>
+    </a>
+    <div class="border-start ps-3 fs-5 text-success">
+        ${username}
+    </div>`;
 }
 
 if (sendCommentBtn) {
@@ -243,6 +203,22 @@ if (sendCommentBtn) {
 }
 
 document.addEventListener('click', (event) => {
+
+    if (event.target.matches('#logoutBtn')) {
+
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("username");
+
+        const container = document.getElementById("authentication");
+        container.innerHTML = `
+            <a href="/auth/" class="me-2">
+                <button class="btn btn-primary">Войти</button>
+            </a>
+            <a href="/registration/">
+                <button class="btn btn-secondary">Зарегистрироваться</button>
+            </a>`;
+      }
   if (event.target.matches('.delete-comment')) {
     const photoId = event.target.dataset.id;
     deletePhoto(photoId);
