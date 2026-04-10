@@ -4,7 +4,7 @@ from rest_framework import status
 from service_objects.errors import ValidationError
 from service_objects.services import ServiceWithResult
 
-from models_app.models import Like
+from models_app.models import Like, Photo
 
 
 class LikesShowService(ServiceWithResult):
@@ -19,12 +19,12 @@ class LikesShowService(ServiceWithResult):
         return self
 
     def _likes(self):
-        return self._photo
+        return Like.objects.filter(photo_id=self.cleaned_data["id"])
 
     @property
     def _photo(self):
         try:
-            return Like.objects.filter(photo_id=self.cleaned_data["id"])
+            return Photo.objects.get(id=self.cleaned_data["id"])
         except ObjectDoesNotExist:
             return None
 

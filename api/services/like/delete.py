@@ -7,7 +7,7 @@ from service_objects.errors import ValidationError
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
-from models_app.models import Like, User
+from models_app.models import Like, Photo, User
 
 
 class LikeDeleteService(ServiceWithResult):
@@ -31,7 +31,7 @@ class LikeDeleteService(ServiceWithResult):
     @lru_cache
     def _photo(self):
         try:
-            return Like.objects.filter(photo_id=self.cleaned_data["id"])
+            return Photo.objects.get(id=self.cleaned_data["id"])
         except ObjectDoesNotExist:
             return None
 
