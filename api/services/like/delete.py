@@ -48,7 +48,7 @@ class LikeDeleteService(ServiceWithResult):
     def _validate_photo_exist(self):
         if not self._photo:
             self.add_error(
-                "photo", ValidationError(message="Запрошенной фотографии нет")
+                "photo", ValidationError(message="Запрошенной фотографии не существует")
             )
             self.response_status = status.HTTP_404_NOT_FOUND
 
