@@ -36,9 +36,17 @@ function fetchLikes() {
     const id = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/list/`;
 
+    let access_token = localStorage.getItem("access_token");
+    const headers = {
+        "Content-Type": "application/json",
+        ...(access_token && {
+            "Authorization": `Bearer ${access_token}`
+        })
+    };
 
     fetch(apiURL, {
-            method: "GET"
+            method: "GET",
+            headers
         })
         .then(response => {
             return response.json();
@@ -47,8 +55,13 @@ function fetchLikes() {
 
             const container = document.getElementById("likes");
 
-            const html = `<p>Всего лайков ${data.length}</p>`;
+            const html = `<p>Всего лайков: ${data["likes"].length}</p>`;
             container.innerHTML = html;
+
+            if (data["liked"]) {
+                const button = document.getElementById("like_button");
+                button.innerHTML = "Убрать лайк";
+            }
 
 
         })
