@@ -11,7 +11,6 @@ SHOW_LIKES: DocsDict = {
 CREATE_LIKE: DocsDict = {
     "tags": ["like"],
     "description": "Create Like on Photo by its Id",
-    "request": LikeCreateSerializer,
     "responses": {201: LikeShowSerializer},
 }
 
