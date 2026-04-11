@@ -13,8 +13,8 @@ from models_app.models.photo.fsm import State
 
 class PhotoUpdateService(ServiceWithResult):
     id = forms.IntegerField(required=True)
-    title = forms.CharField(required=False)
-    description = forms.CharField(required=False)
+    title = forms.CharField(required=True, min_length=1, max_length=70)
+    description = forms.CharField(required=True, min_length=1, max_length=100)
     image = forms.ImageField(required=False)
     user = ModelField(User)
 
