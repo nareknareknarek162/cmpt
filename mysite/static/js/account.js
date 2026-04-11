@@ -18,10 +18,21 @@ function fetchPhotos(state="approved") {
         return response.json();
     })
     .then(data => {
-        const container = document.getElementById("photos");
-        container.innerHTML = "";
-        data["results"].forEach(photo => {
-        const html = `
+    const container = document.getElementById("photos");
+    container.innerHTML = "";
+
+    data["results"].forEach(photo => {
+
+    const modify =
+        state === "on_delete" ?
+        `<a href="/photo/${photo.id}/restore/" class="dropdown-item">
+             Восстановить
+           </a>` :
+        `<a href="/photo/${photo.id}/edit/" class="dropdown-item">
+             Редактировать
+           </a>`;
+
+    const html = `
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
             <a href="http://127.0.0.1:8000/photo/${photo.id}/">
@@ -34,19 +45,21 @@ function fetchPhotos(state="approved") {
               <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
                 <i class="bi bi-three-dots-vertical fs-8"></i>
               </button>
-
               <ul class="dropdown-menu">
-                <li><a href="/photos/edit/${photo.id}/" class="dropdown-item edit-btn">Редактировать</a></li>
-                <li><button class="dropdown-item delete-btn text-danger" data-id="${photo.id}">Удалить</button></li>
+                <li>${modify}</li>
+                <li>
+                  <button class="dropdown-item delete-btn text-danger"
+                          data-id="${photo.id}">
+                    Удалить
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
         </div>
-            `;
-            container.innerHTML += html;
-
+        `;
+    container.innerHTML += html;
     });
-
     })
     .catch(error => {
         console.error(error);
