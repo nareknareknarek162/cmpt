@@ -6,8 +6,8 @@ from models_app.models import Photo, User
 
 
 class PhotoCreateService(ServiceWithResult):
-    title = forms.CharField(required=True)
-    description = forms.CharField(required=True)
+    title = forms.CharField(required=True, min_length=1, max_length=70)
+    description = forms.CharField(required=True, min_length=1, max_length=100)
     image = forms.ImageField(required=True)
     author = ModelField(User)
 
