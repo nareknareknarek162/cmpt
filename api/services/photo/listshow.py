@@ -2,7 +2,7 @@ from django import forms
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
 from rest_framework import status
-from service_objects.errors import AuthenticationFailed
+from service_objects.errors import AuthenticationFailed, ValidationError
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
@@ -20,7 +20,14 @@ class PhotoListShowService(ServiceWithResult):
     per_page = forms.IntegerField(required=False, min_value=1, max_value=100, initial=6)
     state = forms.CharField(required=False)
 
-    custom_validations = ["_validate_user_presence"]
+    custom_validations = [
+        "_validate_sort_value",
+        "_validate_order_value",
+        "_validate_state_value",
+        "_validate_search_length",
+        "_validate_user_presence",
+        "_validate_user_rights",
+    ]
 
     def process(self):
         self.run_custom_validations()
@@ -46,7 +53,6 @@ class PhotoListShowService(ServiceWithResult):
         queryset = Photo.objects.all()
         search = self.cleaned_data.get("search")
         mine = self.cleaned_data.get("mine")
-        state = self.cleaned_data.get("state")
         if search:
             queryset = queryset.filter(
                 Q(description__icontains=search)
@@ -55,8 +61,7 @@ class PhotoListShowService(ServiceWithResult):
             )
         if mine:
             queryset = queryset.filter(author=self.cleaned_data["user"])
-        if state:
-            queryset = queryset.filter(state=self.cleaned_data["state"])
+        queryset = queryset.filter(state=self.cleaned_data.get("state") or "approved")
         return queryset
 
     def _sorted_photo(self):
@@ -78,12 +83,70 @@ class PhotoListShowService(ServiceWithResult):
 
         return queryset
 
+    def _validate_sort_value(self):
+        if self.cleaned_data.get("sort") not in ("likes", "comments", "date", ""):
+            self.add_error(
+                "sort",
+                ValidationError(
+                    message="Недопустимая сортировка. Разрешены: likes, date, comments"
+                ),
+            )
+            self.response_status = status.HTTP_400_BAD_REQUEST
+
+    def _validate_order_value(self):
+        if self.cleaned_data.get("order") not in ("-", ""):
+            self.add_error(
+                "order",
+                ValidationError(
+                    message="Недопустимый порядок сортировки. Разрешены: -"
+                ),
+            )
+            self.response_status = status.HTTP_400_BAD_REQUEST
+
+    def _validate_state_value(self):
+        if self.cleaned_data.get("state") not in (
+            "approved",
+            "on_moderation",
+            "on_delete",
+            "rejected",
+            "",
+        ):
+            self.add_error(
+                "state",
+                ValidationError(
+                    message="Недопустимый статус. Разрешены: approved, on_moderation, on_delete, rejected"
+                ),
+            )
+            self.response_status = status.HTTP_400_BAD_REQUEST
+
+    def _validate_search_length(self):
+        if len(self.cleaned_data.get("search")) > 70:
+            self.add_error(
+                "search",
+                ValidationError(message="Слишком длинный поисковый запрос (>70)"),
+            )
+            self.response_status = status.HTTP_400_BAD_REQUEST
+
     def _validate_user_presence(self):
         if self.cleaned_data.get("mine") and not self.cleaned_data.get("user"):
             self.add_error(
                 "mine",
                 AuthenticationFailed(
                     message="Для просмотра своих фотографий требуется авторизация"
+                ),
+            )
+            self.response_status = status.HTTP_401_UNAUTHORIZED
+
+    def _validate_user_rights(self):
+        if (
+            not self.cleaned_data.get("mine")
+            and self.cleaned_data.get("state") not in ("approved", "")
+            and not self.cleaned_data.get("user")
+        ):
+            self.add_error(
+                "state",
+                AuthenticationFailed(
+                    message="Для просмотора доступны только опубликованные фото"
                 ),
             )
             self.response_status = status.HTTP_401_UNAUTHORIZED

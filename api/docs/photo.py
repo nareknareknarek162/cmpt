@@ -68,7 +68,7 @@ SHOW_LIST_PHOTO: DocsDict = {
             location=OpenApiParameter.QUERY,
             required=False,
             description="get photos by status",
-            enum=["approved", "on_moderation", "rejected"],
+            enum=["approved", "on_moderation", "rejected", "on_delete"],
         ),
     ],
 }
