@@ -29,7 +29,13 @@ class PhotoDetailView(APIView):
 
     @extend_schema(**SHOW_PHOTO)
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PhotoShowService, {"id": kwargs["id"]})
+        outcome = ServiceOutcome(
+            PhotoShowService,
+            {
+                "id": kwargs["id"],
+                "user": request.user if request.user.is_authenticated else None,
+            },
+        )
         return Response(
             PhotoShowDetailSerializer(outcome.result).data, status=status.HTTP_200_OK
         )
