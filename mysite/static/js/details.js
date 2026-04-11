@@ -1,3 +1,5 @@
+const username = localStorage.getItem("username");
+
 function fetchPhoto() {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
@@ -53,16 +55,53 @@ function fetchLikes() {
         })
         .then(data => {
 
-            const container = document.getElementById("likes");
-
-            const html = `<p>Всего лайков: ${data["likes"].length}</p>`;
-            container.innerHTML = html;
+            document.getElementById("likes-count").textContent = data["likes"].length;
 
             if (data["liked"]) {
                 const button = document.getElementById("like_button");
                 button.innerHTML = "Убрать лайк";
+                button.dataset.method = "DELETE"
             }
 
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+function toggleLike() {
+    const id = window.location.pathname.split("/")[2];
+    const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/`;
+
+    const button = document.getElementById("like_button");
+    httpMethod = button.dataset.method
+
+    let access_token = localStorage.getItem("access_token");
+    fetch(apiURL, {
+            method: httpMethod,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(data => {
+            const el = document.getElementById("likes-count");
+            if (httpMethod == "POST") {
+                button.innerHTML = "Убрать лайк";
+                button.dataset.method = "DELETE";
+                el.textContent = Number(el.textContent) + 1;
+            }
+            if (httpMethod == "DELETE") {
+                button.innerHTML = "Лайкнуть";
+                button.dataset.method = "POST";
+                el.textContent = Number(el.textContent) - 1;
+            }
 
         })
         .catch(error => {
@@ -136,23 +175,23 @@ function deletePhoto(commentId) {
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${access_token}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-    })
-    .then(data => {
-        const element = document.getElementById(`${commentId}`);
-        element.remove();
-    })
-    .catch(error => {
-        console.error(error);
-    });
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${access_token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(data => {
+            const element = document.getElementById(`${commentId}`);
+            element.remove();
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 
@@ -196,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const logoutBtn = document.getElementById("logoutBtn");
 const sendCommentBtn = document.getElementById("sendCommentBtn");
-const username = localStorage.getItem("username");
 
 if (username) {
     const container = document.getElementById("authentication");
@@ -231,9 +269,16 @@ document.addEventListener('click', (event) => {
             <a href="/registration/">
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>`;
-      }
-  if (event.target.matches('.delete-comment')) {
-    const photoId = event.target.dataset.id;
-    deletePhoto(photoId);
-  }
+    }
+    if (event.target.matches('.delete-comment')) {
+        const photoId = event.target.dataset.id;
+        deletePhoto(photoId);
+    }
+    if (event.target.matches("#like_button")) {
+        if (username) {
+            toggleLike();
+        }
+        else {
+        alert("войдите")}
+    }
 });

@@ -25,10 +25,12 @@
 <div id="photo"></div>
 <br>
 <div class="text-center mt-3">
-    <button type="submit" class="btn btn-primary text-center mt-3" name="like" id="like_button">Лайкнуть</button>
+    <button type="submit" class="btn btn-primary text-center mt-3" name="like" id="like_button" data-method="POST">Лайкнуть</button>
 </div>
 
-<p class="text-center mt-2" id="likes"></p>
+<p class="text-center mt-2">
+    Всего лайков: <span id="likes-count"></span>
+</p>
 
 <!-- комментарии -->
 <div class="container mt-3">
