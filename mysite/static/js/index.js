@@ -36,10 +36,9 @@ function fetchPhotos(page=1) {
                 const html = `
                 <div class="col-6 col-md-4 mb-3">
                     <a href="/photo/${photo.id}/">
-                        <img src="${photo.image}"
+                        <img src="${photo.image_preview}"
                              title="${photo.description}"
-                             class="img-fluid rounded"
-                             style="max-width:200px;">
+                             class="img-fluid rounded">
                     </a>
                 </div>
             `;

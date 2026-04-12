@@ -1,4 +1,6 @@
 from django.db import models
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
 
 from .fsm import Flow, State
 
@@ -29,6 +31,7 @@ class Photo(models.Model):
         choices=State.choices,
         verbose_name="Статус",
     )
+    image_preview = ImageSpecField(source="image", processors=[ResizeToFit(200, None)])
 
     def __str__(self):
         return self.title
