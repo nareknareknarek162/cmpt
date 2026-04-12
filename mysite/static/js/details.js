@@ -3,10 +3,18 @@ const username = localStorage.getItem("username");
 function fetchPhoto() {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    let access_token = localStorage.getItem("access_token");
+    const headers = {
+        "Content-Type": "application/json",
+        ...(access_token && {
+            "Authorization": `Bearer ${access_token}`
+        })
+    };
 
 
     fetch(apiURL, {
-            method: "GET"
+            method: "GET",
+            headers
         })
         .then(response => {
             if (!response.ok) {

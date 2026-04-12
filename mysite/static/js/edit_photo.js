@@ -1,8 +1,11 @@
 function populatePhoto(photoId) {
     const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
-            method: "GET"
+            method: "GET",
+            headers: {"Accept": "application/json",
+                "Authorization": `Bearer ${access_token}`},
         })
         .then(response => {
             if (!response.ok) {
@@ -60,4 +63,22 @@ populatePhoto(photoId);
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     updatePhoto(photoId);
+});
+
+document.getElementById('photo-image').addEventListener('change', function() {
+    const file = this.files[0];
+    const errorDiv = document.getElementById('image-error');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (file && !file.type.startsWith('image/')) {
+        this.classList.add('is-invalid');
+        errorDiv.style.display = 'block';
+
+
+        this.value = '';
+    } else {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+        errorDiv.style.display = 'none';
+    }
 });

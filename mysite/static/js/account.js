@@ -25,10 +25,10 @@ function fetchPhotos(state="approved") {
 
     const modify =
         state === "on_delete" ?
-        `<a href="/photo/${photo.id}/restore/" class="dropdown-item">
+        `<a href="/photo/restore/${photo.id}" class="dropdown-item">
              Восстановить
            </a>` :
-        `<a href="/photo/${photo.id}/edit/" class="dropdown-item">
+        `<a href="/photos/edit/${photo.id}" class="dropdown-item">
              Редактировать
            </a>`;
 

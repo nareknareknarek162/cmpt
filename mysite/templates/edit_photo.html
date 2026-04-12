@@ -19,6 +19,9 @@
         <div class="mb-3">
             <label class="form-label">Новое фото (опционально)</label>
             {{form.image}}
+            <div id="image-error" class="invalid-feedback" style="display: none;">
+            Пожалуйста, выберите изображение (JPG, PNG, WebP). Выбранный файл не подходит.
+            </div>
         </div>
 
         <div class="mb-3">

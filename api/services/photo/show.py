@@ -37,8 +37,8 @@ class PhotoShowService(ServiceWithResult):
     def _validate_author(self):
         if (
             self._photo
-            and self.cleaned_data["user"].id != self._photo.author_id
             and self._photo.state != "approved"
+            and self.cleaned_data["user"].id != self._photo.author_id
         ):
             self.add_error("id", ValidationError(message="Нет доступа"))
             self.response_status = status.HTTP_403_FORBIDDEN
