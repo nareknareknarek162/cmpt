@@ -7,6 +7,7 @@ from models_app.models import Photo
 class PhotoShowDetailSerializer(ModelSerializer):
     author = serializers.CharField(source="author.username")
     publication_date = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
+    image_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = Photo
@@ -17,6 +18,12 @@ class PhotoShowDetailSerializer(ModelSerializer):
             "description",
             "publication_date",
             "image",
+            "image_detail",
             "previous_image",
             "state",
         ]
+
+    def get_image_detail(self, obj):
+        if obj.image_detail:
+            return obj.image_detail.url
+        return None

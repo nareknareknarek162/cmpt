@@ -36,10 +36,9 @@ function fetchPhotos(state="approved") {
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
             <a href="http://127.0.0.1:8000/photo/${photo.id}/">
-            <img src="${photo.image}"
+            <img src="${photo.image_preview}"
                  title="${photo.description}"
-                 class="img-fluid rounded"
-                 style="max-width:200px;">
+                 class="img-fluid rounded">
             </a>
             <div class="dropdown position-absolute top-0 end-0">
               <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">

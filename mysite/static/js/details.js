@@ -28,7 +28,7 @@ function fetchPhoto() {
 
             const html = `
             <p class="text-center fw-semibold fs-2">${data.title}</p>
-            <img src="${data.image}" class="rounded mx-auto d-block">
+            <img src="${data.image_detail}" class="rounded mx-auto d-block">
             <p class="text-center">${data.description}</p>
             <p class="text-center">Автор: ${data.author}</p>
             <p class="text-center">Загружено: ${data.publication_date}</p>

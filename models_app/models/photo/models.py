@@ -31,7 +31,8 @@ class Photo(models.Model):
         choices=State.choices,
         verbose_name="Статус",
     )
-    image_preview = ImageSpecField(source="image", processors=[ResizeToFit(200, None)])
+    image_preview = ImageSpecField(source="image", processors=[ResizeToFit(250, None)])
+    image_detail = ImageSpecField(source="image", processors=[ResizeToFit(600, 750)])
 
     def __str__(self):
         return self.title

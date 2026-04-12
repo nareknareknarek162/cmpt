@@ -16,7 +16,7 @@ function populatePhoto(photoId) {
         .then(data => {
             document.getElementById("photo-title").value = data.title;
             document.getElementById("photo-description").value = data.description;
-            document.getElementById("photo-preview").src = data.image;
+            document.getElementById("photo-preview").src = data.image_detail;
             document.getElementById("photo-image").removeAttribute("required");
 
         })
