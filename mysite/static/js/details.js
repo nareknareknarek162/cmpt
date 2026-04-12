@@ -286,7 +286,14 @@ document.addEventListener('click', (event) => {
         if (username) {
             toggleLike();
         }
-        else {
-        alert("войдите")}
+
     }
 });
+
+const tooltipList = (!username &&
+    [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]
+        .map(el => {
+            el.setAttribute('title', 'Войдите, чтобы лайкать фотографии');
+            return new bootstrap.Tooltip(el);
+        })
+) || [];
