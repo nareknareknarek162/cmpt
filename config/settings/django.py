@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "drf_spectacular",
+    "imagekit",
 ]
 
 MIDDLEWARE = [
