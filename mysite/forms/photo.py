@@ -35,7 +35,7 @@ class PhotoForm(ModelForm):
 
     image = forms.ImageField(
         widget=forms.ClearableFileInput(
-            attrs={"class": "form-control", "id": "photo-image"}
+            attrs={"class": "form-control", "id": "photo-image", "accept": "image/*"}
         )
     )
 

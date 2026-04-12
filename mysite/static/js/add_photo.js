@@ -30,5 +30,26 @@ const form = document.querySelector('form');
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    fetchData();
+    addPhoto();
+});
+
+document.getElementById('photo-image').addEventListener('change', function() {
+    const file = this.files[0];
+    const errorDiv = document.getElementById('image-error');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (file && !file.type.startsWith('image/')) {
+        this.classList.add('is-invalid');
+        errorDiv.style.display = 'block';
+
+        submitBtn.disabled = true;
+
+
+        this.value = '';
+    } else {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+        errorDiv.style.display = 'none';
+        submitBtn.disabled = false;
+    }
 });
