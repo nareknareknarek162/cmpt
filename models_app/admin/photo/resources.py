@@ -47,12 +47,12 @@ class PhotoAdmin(admin.ModelAdmin):
         "publication_date",
         "author",
         "title",
-        "description"
+        "description",
     ]
 
     list_display = ["title", "state", "publication_date", "author"]
     list_filter = ["state"]
-    search_fields = ["title", "author", "publication_date"]
+    search_fields = ["title", "author__username", "publication_date"]
 
     actions = [make_approved, make_rejected]
 
@@ -74,8 +74,15 @@ class PhotoAdmin(admin.ModelAdmin):
 
     def formfield_for_choice_field(self, db_field, request, **kwargs):
         if db_field.name == "state":
-            id = request.resolver_match.kwargs.get("object_id")  # ?
-            pic = Photo.objects.get(pk=id)
+            id = request.resolver_match.kwargs.get("object_id")
+            if not id:
+                return super().formfield_for_choice_field(db_field, request, **kwargs)
+
+            try:
+                pic = Photo.objects.get(pk=id)
+            except Photo.DoesNotExist:
+                return super().formfield_for_choice_field(db_field, request, **kwargs)
+
             if pic.state == State.ON_MODERATION:
                 kwargs["choices"] = [
                     (State.APPROVED, "Approved"),
@@ -87,3 +94,6 @@ class PhotoAdmin(admin.ModelAdmin):
                     (State.ON_MODERATION, "On Moderation"),
                 ]
             return super().formfield_for_choice_field(db_field, request, **kwargs)
+
+    def has_add_permission(self, request):
+        return False
