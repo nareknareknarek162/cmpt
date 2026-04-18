@@ -24,7 +24,6 @@ class PhotoListShowService(ServiceWithResult):
         "_validate_sort_value",
         "_validate_order_value",
         "_validate_state_value",
-        "_validate_search_length",
         "_validate_user_presence",
         "_validate_user_rights",
     ]

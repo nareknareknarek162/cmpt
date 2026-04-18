@@ -17,7 +17,7 @@ from api.serializers.photo.show import PhotoShowSerializer
 from api.serializers.photo.showdetail import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
 from api.services.photo.delete import PhotoDeleteService
-from api.services.photo.listshow import PhotoListShowService
+from api.services.photo.list import PhotoListShowService
 from api.services.photo.show import PhotoShowService
 from api.services.photo.update import PhotoUpdateService
 from utils.pagination import CustomPagination
