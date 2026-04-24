@@ -39,7 +39,7 @@ class RetrieveCommentView(APIView):
 
     @extend_schema(**DELETE_COMMENT)
     def delete(self, request, *args, **kwargs):
-        ServiceOutcome(CommentDeleteService, {"id": kwargs["id"]})
+        ServiceOutcome(CommentDeleteService, {"id": kwargs["id"], "user": request.user})
         return Response(None, status=status.HTTP_200_OK)
 
 

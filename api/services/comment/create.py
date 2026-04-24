@@ -8,7 +8,7 @@ from models_app.models import Comment, User
 class CommentCreateService(ServiceWithResult):
     id = forms.IntegerField(required=True, min_value=1)
     author = ModelField(User)
-    text = forms.CharField(required=True)
+    text = forms.CharField(required=True, min_length=2)
 
     def process(self):
         self.result = self._create_comment()
