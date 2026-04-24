@@ -2,28 +2,36 @@ from django import forms
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
 from rest_framework import status
-from service_objects.errors import AuthenticationFailed, ValidationError
+from service_objects.errors import AuthenticationFailed
 from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 import config.settings.restframework as settings
 from models_app.models import Photo, User
+from models_app.models.photo.fsm import State
 
 
 class PhotoListShowService(ServiceWithResult):
-    search = forms.CharField(required=False)
-    sort = forms.CharField(required=False)
-    order = forms.CharField(required=False)
+    search = forms.CharField(required=False, max_length=50, min_length=2)
+    sort = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("likes", "По лайкам"),
+            ("comments", "По комментариям"),
+            ("date", "По дате"),
+            ("", "Без сортировки"),
+        ],
+    )
+    order = forms.ChoiceField(
+        required=False, choices=[("-", "По убыванию"), ("", "По возрастанию")]
+    )
     mine = forms.BooleanField(required=False)
     user = ModelField(User, required=False)
     page = forms.IntegerField(required=False, min_value=1, initial=1)
     per_page = forms.IntegerField(required=False, min_value=1, max_value=100, initial=6)
-    state = forms.CharField(required=False)
+    state = forms.ChoiceField(required=False, choices=State.choices)
 
     custom_validations = [
-        "_validate_sort_value",
-        "_validate_order_value",
-        "_validate_state_value",
         "_validate_user_presence",
         "_validate_user_rights",
     ]
@@ -81,50 +89,6 @@ class PhotoListShowService(ServiceWithResult):
                 queryset = queryset.order_by("publication_date")
 
         return queryset
-
-    def _validate_sort_value(self):
-        if self.cleaned_data.get("sort") not in ("likes", "comments", "date", ""):
-            self.add_error(
-                "sort",
-                ValidationError(
-                    message="Недопустимая сортировка. Разрешены: likes, date, comments"
-                ),
-            )
-            self.response_status = status.HTTP_400_BAD_REQUEST
-
-    def _validate_order_value(self):
-        if self.cleaned_data.get("order") not in ("-", ""):
-            self.add_error(
-                "order",
-                ValidationError(
-                    message="Недопустимый порядок сортировки. Разрешены: -"
-                ),
-            )
-            self.response_status = status.HTTP_400_BAD_REQUEST
-
-    def _validate_state_value(self):
-        if self.cleaned_data.get("state") not in (
-            "approved",
-            "on_moderation",
-            "on_delete",
-            "rejected",
-            "",
-        ):
-            self.add_error(
-                "state",
-                ValidationError(
-                    message="Недопустимый статус. Разрешены: approved, on_moderation, on_delete, rejected"
-                ),
-            )
-            self.response_status = status.HTTP_400_BAD_REQUEST
-
-    def _validate_search_length(self):
-        if len(self.cleaned_data.get("search")) > 70:
-            self.add_error(
-                "search",
-                ValidationError(message="Слишком длинный поисковый запрос (>70)"),
-            )
-            self.response_status = status.HTTP_400_BAD_REQUEST
 
     def _validate_user_presence(self):
         if self.cleaned_data.get("mine") and not self.cleaned_data.get("user"):
