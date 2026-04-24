@@ -1,5 +1,12 @@
+import { refreshToken } from './refresh.js';
+
 const select = document.getElementById("state");
 const username = localStorage.getItem("username");
+
+if (username) {
+    const container = document.getElementById("username");
+    container.innerHTML = `${username}`;
+}
 
 function fetchPhotos(state="approved") {
     const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
@@ -89,11 +96,6 @@ function deletePhoto(photoId) {
     });
 }
 
-if (username) {
-    const container = document.getElementById("username");
-    container.innerHTML = `${username}`;
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     fetchPhotos();
 });
@@ -103,6 +105,18 @@ document.addEventListener('click', (event) => {
     const photoId = event.target.dataset.id;
     deletePhoto(photoId);
   }
+
+  if (event.target.matches('.btn-outline-secondary')) {
+  const refresh_token = localStorage.getItem("refresh_token");
+  refreshToken(refresh_token);
+  }
+
+  if (event.target.matches('#logoutBtn')) {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("username");
+
+       }
 });
 
 select.addEventListener("change", (e) => {
