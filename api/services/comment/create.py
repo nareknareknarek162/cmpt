@@ -9,6 +9,7 @@ class CommentCreateService(ServiceWithResult):
     id = forms.IntegerField(required=True, min_value=1)
     author = ModelField(User)
     text = forms.CharField(required=True, min_length=2)
+    parent_comment = forms.IntegerField(required=False, min_value=1)
 
     def process(self):
         self.result = self._create_comment()
@@ -19,6 +20,7 @@ class CommentCreateService(ServiceWithResult):
             author_id=self.cleaned_data["author"].id,
             photo_id=self.cleaned_data["id"],
             text=self.cleaned_data["text"],
+            parent_comment_id=self.cleaned_data.get("parent_comment"),
         )
 
         return comment

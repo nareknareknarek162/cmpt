@@ -15,8 +15,8 @@ from api.docs.comment import (
 from api.serializers.comment.show import CommentShowSerializer
 from api.services.comment.create import CommentCreateService
 from api.services.comment.delete import CommentDeleteService
+from api.services.comment.list import CommentShowListService
 from api.services.comment.show import CommentShowService
-from api.services.comment.showlist import CommentShowListService
 from api.services.comment.update import CommentUpdateService
 
 

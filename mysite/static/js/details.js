@@ -13,9 +13,9 @@ function fetchPhoto() {
 
 
     fetch(apiURL, {
-            method: "GET",
-            headers
-        })
+        method: "GET",
+        headers
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -28,7 +28,7 @@ function fetchPhoto() {
 
             const html = `
             <p class="text-center fw-semibold fs-2">${data.title}</p>
-            <img src="${data.image_detail}" class="rounded mx-auto d-block">
+            <img alt="${data.description}" src="${data.image_detail}" class="rounded mx-auto d-block">
             <p class="text-center">${data.description}</p>
             <p class="text-center">Автор: ${data.author}</p>
             <p class="text-center">Загружено: ${data.publication_date}</p>
@@ -55,9 +55,9 @@ function fetchLikes() {
     };
 
     fetch(apiURL, {
-            method: "GET",
-            headers
-        })
+        method: "GET",
+        headers
+    })
         .then(response => {
             return response.json();
         })
@@ -83,29 +83,29 @@ function toggleLike() {
     const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/`;
 
     const button = document.getElementById("like_button");
-    httpMethod = button.dataset.method
+    let httpMethod = button.dataset.method
 
     let access_token = localStorage.getItem("access_token");
     fetch(apiURL, {
-            method: httpMethod,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`
-            },
-        })
+        method: httpMethod,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${access_token}`
+        },
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
         })
-        .then(data => {
+        .then(() => {
             const el = document.getElementById("likes-count");
-            if (httpMethod == "POST") {
+            if (httpMethod === "POST") {
                 button.innerHTML = "Убрать лайк";
                 button.dataset.method = "DELETE";
                 el.textContent = Number(el.textContent) + 1;
             }
-            if (httpMethod == "DELETE") {
+            if (httpMethod === "DELETE") {
                 button.innerHTML = "Лайкнуть";
                 button.dataset.method = "POST";
                 el.textContent = Number(el.textContent) - 1;
@@ -122,17 +122,17 @@ function fetchComments() {
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
 
     fetch(apiURL, {
-            method: "GET"
-        })
+        method: "GET"
+    })
         .then(response => response.json())
         .then(data => {
             const commentsContainer = document.getElementById("comments");
             let html = "";
 
             data.forEach(comment => {
-            const isAuthor = comment.author === username;
+                const isAuthor = comment.author === username;
 
-            const dropdown = isAuthor ? ` <div class="dropdown position-absolute top-0 end-0 m-2">
+                const dropdown = isAuthor ? ` <div class="dropdown position-absolute top-0 end-0 m-2">
               <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
                 <i class="bi bi-three-dots-vertical fs-5"></i>
               </button>
@@ -146,7 +146,7 @@ function fetchComments() {
               </ul>
             </div> ` : "";
 
-            html += `
+                html += `
             <div class="card mb-1 mt-2" id="${comment.id}">
                 <div class="card-body position-relative pe-5">
 
@@ -182,17 +182,17 @@ function deletePhoto(commentId) {
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${access_token}`
-            }
-        })
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
         })
-        .then(data => {
+        .then(() => {
             const element = document.getElementById(`${commentId}`);
             element.remove();
         })
@@ -210,15 +210,15 @@ function sendComment() {
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`
-            },
-            body: JSON.stringify({
-                "text": comment_text
-            })
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${access_token}`
+        },
+        body: JSON.stringify({
+            "text": comment_text
         })
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText);
