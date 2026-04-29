@@ -7,4 +7,5 @@ include(
     "restframework.py",
     "swagger.py",
     "simplejwt.py",
+    "redis.py",
 )

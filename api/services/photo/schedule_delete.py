@@ -8,7 +8,7 @@ from service_objects.services import ServiceWithResult
 from models_app.models import Photo
 
 
-class PhotoDeleteService(ServiceWithResult):
+class PhotoScheduleDeleteService(ServiceWithResult):
     id = forms.IntegerField(min_value=1, required=True)
     user = forms.IntegerField(min_value=1)
     custom_validations = ["_validate_photo_exists", "_validate_author"]
@@ -16,12 +16,13 @@ class PhotoDeleteService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self.result = self._delete_photo()
+            self.result = self._schedule_delete_photo()
         return self
 
-    def _delete_photo(self):
+    def _schedule_delete_photo(self):
         photo = self._photo
-        photo.delete()
+        photo.state = "on_delete"  # плохо
+        photo.save()
 
         return photo
 

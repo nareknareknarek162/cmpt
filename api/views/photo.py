@@ -16,10 +16,11 @@ from api.docs.photo import (
 from api.serializers.photo.show import PhotoShowSerializer
 from api.serializers.photo.showdetail import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
-from api.services.photo.delete import PhotoDeleteService
 from api.services.photo.list import PhotoListShowService
+from api.services.photo.schedule_delete import PhotoScheduleDeleteService
 from api.services.photo.show import PhotoShowService
 from api.services.photo.update import PhotoUpdateService
+from api.tasks import delete_photo_task
 from utils.pagination import CustomPagination
 
 
@@ -42,8 +43,15 @@ class PhotoDetailView(APIView):
 
     @extend_schema(**DELETE_PHOTO)
     def delete(self, request, *args, **kwargs):
-        ServiceOutcome(PhotoDeleteService, {"id": kwargs["id"], "user": request.user})
-        return Response(None, status=status.HTTP_200_OK)
+        photo_id = kwargs["id"]
+        user_id = request.user.id
+
+        ServiceOutcome(PhotoScheduleDeleteService, {"id": photo_id, "user": user_id})
+        delete_photo_task.apply_async(args=[photo_id, user_id], countdown=90)
+
+        return Response(
+            {"detail": "Удаление запланировано"}, status=status.HTTP_202_ACCEPTED
+        )
 
     @extend_schema(**PATCH_PHOTO)
     def patch(self, request, *args, **kwargs):
