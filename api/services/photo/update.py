@@ -8,7 +8,6 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from models_app.models import Photo, User
-from models_app.models.photo.fsm import State
 
 
 class PhotoUpdateService(ServiceWithResult):
@@ -34,7 +33,7 @@ class PhotoUpdateService(ServiceWithResult):
                 if field == "image":
                     photo.previous_image = photo.image
                 setattr(photo, field, self.cleaned_data[field])
-        photo.state = State.ON_MODERATION
+        photo.flow.edit()
 
         photo.save()
         return photo
