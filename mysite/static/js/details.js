@@ -202,12 +202,20 @@ function deletePhoto(commentId) {
 }
 
 
-function sendComment() {
+function sendComment(parentCommentId = null) {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${photoId}/`;
 
     let comment_text = document.getElementById("comment_text").value;
     let access_token = localStorage.getItem("access_token");
+
+    const body = {
+        text: comment_text
+    };
+
+    if (parentCommentId !== null) {
+        body.parent_comment = parentCommentId;
+    }
 
     fetch(apiURL, {
         method: "POST",
@@ -215,9 +223,7 @@ function sendComment() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${access_token}`
         },
-        body: JSON.stringify({
-            "text": comment_text
-        })
+        body: JSON.stringify(body)
     })
         .then(response => {
             if (!response.ok) {
@@ -256,10 +262,7 @@ if (username) {
     </div>`;
 }
 
-if (sendCommentBtn) {
-    sendCommentBtn.addEventListener("click", sendComment);
-}
-
+let replyTo = null;
 document.addEventListener('click', (event) => {
 
     if (event.target.matches('#logoutBtn')) {
@@ -277,17 +280,23 @@ document.addEventListener('click', (event) => {
                 <button class="btn btn-secondary">Зарегистрироваться</button>
             </a>`;
     }
-    if (event.target.matches('.delete-comment')) {
+    if (event.target.closest('.delete-comment')) {
         const photoId = event.target.dataset.id;
         deletePhoto(photoId);
     }
-    if (event.target.matches("#like_button")) {
+    if (event.target.closest("#like_button")) {
         if (username) {
             toggleLike();
         }
-
+    }
+    if (event.target.closest(".reply-comment")) {
+        replyTo = event.target.closest(".reply-comment").dataset.id;
     }
 });
+
+if (sendCommentBtn) {
+    sendCommentBtn.addEventListener("click", () => sendComment(replyTo));
+}
 
 const tooltipList = (!username &&
     [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]

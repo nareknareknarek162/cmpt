@@ -108,7 +108,7 @@ document.addEventListener('click', async (event) => {
 
   if (event.target.matches('.btn-outline-secondary')) {
     const refresh_token = localStorage.getItem("refresh_token");
-    await refreshToken(refresh_token);
+    refreshToken(refresh_token);
 
     const token = localStorage.getItem('access_token');
 
