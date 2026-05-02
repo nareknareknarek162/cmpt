@@ -8,6 +8,7 @@ class CommentShowSerializer(ModelSerializer):
     author = serializers.CharField(source="author.username")
     created_at = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
     updated_at = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -19,4 +20,8 @@ class CommentShowSerializer(ModelSerializer):
             "created_at",
             "updated_at",
             "parent_comment",
+            "children",
         ]
+
+    def get_children(self, obj):
+        return CommentShowSerializer(getattr(obj, "children_list", []), many=True).data
