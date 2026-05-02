@@ -117,6 +117,53 @@ function toggleLike() {
         });
 }
 
+function renderComment(comment) {
+    const commentsContainer = document.getElementById("comments");
+    const isAuthor = comment.author === username;
+
+    let html = "";
+
+    const dropdown = isAuthor ? ` <div class="dropdown position-absolute top-0 end-0 m-2">
+          <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
+            <i class="bi bi-three-dots-vertical fs-5"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <button class="dropdown-item edit-comment" data-id="${comment.id}" data-bs-toggle="modal" data-bs-target="#myModal"> Редактировать </button>
+            </li>
+            <li>
+              <button class="dropdown-item text-danger delete-comment" data-id="${comment.id}"> Удалить </button>
+            </li>
+          </ul>
+        </div> ` : "";
+
+    html += `
+        <div class="card mb-1 mt-2" id="${comment.id}">
+            <div class="card-body position-relative pe-5">
+
+                ${dropdown}
+
+                <h6 class="card-subtitle mb-1 text-muted">
+                    ${comment.author} | ${comment.created_at}
+                </h6>
+
+                <p class="card-text">${comment.text}</p>
+
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button class="btn text-muted p-0 reply-comment"
+                    data-id="${comment.id}"
+                    data-bs-target="#myModal"
+                    data-bs-toggle="modal">
+                    <i class="bi bi-reply fs-4"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    commentsContainer.innerHTML += html;
+}
+
 function fetchComments() {
     const id = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
@@ -126,53 +173,9 @@ function fetchComments() {
     })
         .then(response => response.json())
         .then(data => {
-            const commentsContainer = document.getElementById("comments");
-            let html = "";
-
             data.forEach(comment => {
-                const isAuthor = comment.author === username;
-
-                const dropdown = isAuthor ? ` <div class="dropdown position-absolute top-0 end-0 m-2">
-              <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
-                <i class="bi bi-three-dots-vertical fs-5"></i>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                  <button class="dropdown-item edit-comment" data-id="${comment.id}" data-bs-toggle="modal" data-bs-target="#myModal"> Редактировать </button>
-                </li>
-                <li>
-                  <button class="dropdown-item text-danger delete-comment" data-id="${comment.id}"> Удалить </button>
-                </li>
-              </ul>
-            </div> ` : "";
-
-                html += `
-            <div class="card mb-1 mt-2" id="${comment.id}">
-                <div class="card-body position-relative pe-5">
-
-                    ${dropdown}
-
-                    <h6 class="card-subtitle mb-1 text-muted">
-                        ${comment.author} | ${comment.created_at}
-                    </h6>
-
-                    <p class="card-text">${comment.text}</p>
-
-                </div>
-
-                <div class="d-flex justify-content-end">
-                    <button class="btn text-muted p-0 reply-comment"
-                        data-id="${comment.id}"
-                        data-bs-target="#myModal"
-                        data-bs-toggle="modal">
-                        <i class="bi bi-reply fs-4"></i>
-                    </button>
-                </div>
-            </div>
-        `;
+                renderComment(comment);
             });
-
-            commentsContainer.innerHTML = html;
         })
         .catch(error => console.error(error));
 }
@@ -231,8 +234,8 @@ function sendComment(parentCommentId = null) {
             }
             return response.json();
         })
-        .then(() => {
-            console.log("success");
+        .then(data => {
+            renderComment(data);
         })
         .catch(error => {
             console.error(error);
