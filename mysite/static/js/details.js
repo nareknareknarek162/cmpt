@@ -206,7 +206,7 @@ function sendComment() {
     const photoId = window.location.pathname.split("/")[2];
     const apiURL = `http://127.0.0.1:8000/api/comment/photo/${photoId}/`;
 
-    comment_text = document.getElementById("comment_text").value;
+    let comment_text = document.getElementById("comment_text").value;
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
@@ -225,7 +225,7 @@ function sendComment() {
             }
             return response.json();
         })
-        .then(data => {
+        .then(() => {
             console.log("success");
         })
         .catch(error => {

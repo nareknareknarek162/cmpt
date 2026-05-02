@@ -43,7 +43,7 @@ function fetchPhotos(state="approved") {
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
             <a href="http://127.0.0.1:8000/photo/${photo.id}/">
-            <img src="${photo.image_preview}"
+            <img alt="${photo.description}" src="${photo.image_preview}"
                  title="${photo.description}"
                  class="img-fluid rounded">
             </a>
@@ -87,7 +87,7 @@ function deletePhoto(photoId) {
             throw new Error(response.statusText);
         }
     })
-    .then(data => {
+    .then(() => {
         const element = document.getElementById(`${photoId}`);
         element.remove();
     })
@@ -100,15 +100,24 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchPhotos();
 });
 
-document.addEventListener('click', (event) => {
+document.addEventListener('click', async (event) => {
   if (event.target.matches('.delete-btn')) {
     const photoId = event.target.dataset.id;
     deletePhoto(photoId);
   }
 
   if (event.target.matches('.btn-outline-secondary')) {
-  const refresh_token = localStorage.getItem("refresh_token");
-  refreshToken(refresh_token);
+    const refresh_token = localStorage.getItem("refresh_token");
+    await refreshToken(refresh_token);
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+      await navigator.clipboard.writeText(token);
+      document.getElementById('token').textContent = token;
+    } catch (e) {
+      console.error('Ошибка копирования', e);
+    }
   }
 
   if (event.target.matches('#logoutBtn')) {
