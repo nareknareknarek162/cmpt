@@ -117,7 +117,7 @@ function toggleLike() {
         });
 }
 
-function renderComment(comment) {
+function renderComment(comment, depth = 0) {
     const commentsContainer = document.getElementById("comments");
     const isAuthor = comment.author === username;
 
@@ -138,17 +138,13 @@ function renderComment(comment) {
         </div> ` : "";
 
     html += `
-        <div class="card mb-1 mt-2" id="${comment.id}">
+          <div class="card mb-1 mt-2" style="margin-left: ${depth * 50}px" id="${comment.id}">
             <div class="card-body position-relative pe-5">
-
                 ${dropdown}
-
                 <h6 class="card-subtitle mb-1 text-muted">
                     ${comment.author} | ${comment.created_at}
                 </h6>
-
                 <p class="card-text">${comment.text}</p>
-
             </div>
 
             <div class="d-flex justify-content-end">
@@ -162,6 +158,11 @@ function renderComment(comment) {
         </div>
     `;
     commentsContainer.innerHTML += html;
+    if (comment.children) {
+        comment.children.forEach(reply => {
+            renderComment(reply, depth + 1);
+        });
+    }
 }
 
 function fetchComments() {
