@@ -30,14 +30,26 @@ function fetchPhotos(state="approved") {
 
     data["results"].forEach(photo => {
 
-    const modify =
+    const dropdown =
         state === "on_delete" ?
-        `<a href="/photo/restore/${photo.id}" class="dropdown-item">
-             Восстановить
-           </a>` :
-        `<a href="/photos/edit/${photo.id}" class="dropdown-item">
-             Редактировать
-           </a>`;
+        `<ul class="dropdown-menu">
+            <a href="/photo/restore/${photo.id}" class="dropdown-item">
+                Восстановить
+            </a>
+        </ul>`:
+        `<ul class="dropdown-menu">
+           <li>
+              <a href="/photos/edit/${photo.id}" class="dropdown-item">
+              Редактировать
+              </a>
+           </li>
+           <li>
+              <button class="dropdown-item delete-btn text-danger"
+                 data-id="${photo.id}">
+              Удалить
+              </button>
+           </li>
+        </ul>`;
 
     const html = `
          <div class="col-6 col-md-4 mb-3">
@@ -51,15 +63,7 @@ function fetchPhotos(state="approved") {
               <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
                 <i class="bi bi-three-dots-vertical fs-8"></i>
               </button>
-              <ul class="dropdown-menu">
-                <li>${modify}</li>
-                <li>
-                  <button class="dropdown-item delete-btn text-danger"
-                          data-id="${photo.id}">
-                    Удалить
-                  </button>
-                </li>
-              </ul>
+               ${dropdown}
             </div>
           </div>
         </div>
