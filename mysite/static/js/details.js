@@ -122,20 +122,40 @@ function renderComment(comment, depth = 0) {
     const isAuthor = comment.author === username;
 
     let html = "";
+    let dropdown = "";
+    if (isAuthor) {
+    const canDelete = !comment.children || comment.children.length === 0;
 
-    const dropdown = isAuthor ? ` <div class="dropdown position-absolute top-0 end-0 m-2">
-          <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
+    dropdown = `
+    <div class="dropdown position-absolute top-0 end-0 m-2">
+        <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
             <i class="bi bi-three-dots-vertical fs-5"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <button class="dropdown-item edit-comment" data-id="${comment.id}" data-bs-toggle="modal" data-bs-target="#myModal"> Редактировать </button>
+                <button 
+                    class="dropdown-item edit-comment"
+                    data-id="${comment.id}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#myModal"
+                >
+                    Редактировать
+                </button>
             </li>
-            <li>
-              <button class="dropdown-item text-danger delete-comment" data-id="${comment.id}"> Удалить </button>
-            </li>
-          </ul>
-        </div> ` : "";
+
+            ${canDelete ? `<li>
+                        <button 
+                            class="dropdown-item text-danger delete-comment"
+                            data-id="${comment.id}"
+                        >
+                            Удалить
+                        </button>
+                    </li>` : ""}
+        </ul>
+    </div>
+    `;
+    }
 
     html += `
           <div class="card mb-1 mt-2" style="margin-left: ${depth * 50}px" id="${comment.id}">
