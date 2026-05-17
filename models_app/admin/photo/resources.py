@@ -5,6 +5,7 @@ from viewflow.fsm import TransitionNotAllowed
 
 from models_app.models import Photo
 from models_app.models.photo.fsm import State
+from notifications.services import notify_photo_state
 
 
 @admin.action(description="Одобрить выбранные фотографии")
@@ -14,6 +15,8 @@ def make_approved(modeladmin, request, queryset):
             photo.flow.approve()
             photo.publication_date = timezone.now()
             photo.save()
+            breakpoint()
+            notify_photo_state(photo)
         except TransitionNotAllowed:
             messages.warning(request, f"Фотографию {photo} нельзя одобрить")
 
@@ -24,6 +27,7 @@ def make_rejected(modeladmin, request, queryset):
         try:
             photo.flow.reject()
             photo.save()
+            notify_photo_state(photo)
         except TransitionNotAllowed:
             messages.warning(request, f"Фотографию {photo} нельзя отклонить")
 

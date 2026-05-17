@@ -100,5 +100,22 @@
 </footer>
 {% load static %}
 <script src="{% static 'js/index.js' %}"></script>
+<script>
+    let access_token = localStorage.getItem("access_token");
+    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/notifications/?token=${access_token}`);
+
+    socket.onopen = () => {
+        console.log("connected");
+    };
+
+    socket.onmessage = (event) => {
+        console.log("message from server:", event.data);
+        alert(event.data);
+    };
+
+    socket.onclose = () => {
+        console.log("socket closed");
+    };
+</script>
 </body>
 </html>
