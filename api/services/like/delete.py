@@ -8,6 +8,7 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from models_app.models import Like, Photo, User
+from notifications.services import notify_photo_liked
 
 
 class LikeDeleteService(ServiceWithResult):
@@ -20,6 +21,9 @@ class LikeDeleteService(ServiceWithResult):
         self.run_custom_validations()
         if self.is_valid():
             self.result = self._delete_like()
+            notify_photo_liked(
+                self._photo, self.cleaned_data["user"].username, "unliked"
+            )
         return self
 
     def _delete_like(self):

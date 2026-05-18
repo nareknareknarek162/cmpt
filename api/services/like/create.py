@@ -8,6 +8,7 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from models_app.models import Like, Photo, User
+from notifications.services import notify_photo_liked
 
 
 class LikeCreateService(ServiceWithResult):
@@ -20,6 +21,7 @@ class LikeCreateService(ServiceWithResult):
         self.run_custom_validations()
         if self.is_valid():
             self.result = self._create_like()
+            notify_photo_liked(self._photo, self.cleaned_data["user"].username, "liked")
         return self
 
     def _create_like(self):

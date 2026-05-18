@@ -1,15 +1,27 @@
-from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
-def notify_photo_state(photo):
+
+def notify_photo_state_changed(photo):
     channel_layer = get_channel_layer()
 
-    message = {
-        "type": "photo_state",
-        "text": f"Ваша фотография была {photo.state}"
+    message = {"type": "photo_state", "text": f"Ваша фотография была {photo.state}"}
+
+    async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
+
+
+def notify_photo_liked(photo, username, action):
+    channel_layer = get_channel_layer()
+
+    actions = {
+        "liked": "оценил",
+        "unliked": "убрал оценку с",
     }
 
-    async_to_sync(channel_layer.group_send)(
-        f"user_{photo.author.id}",
-        message
-    )
+    message = {
+        "type": "photo_like",
+        "text": f"{username} {actions[action]} фотографию {photo.title}. "
+        f"Текущее количество голосов: {photo.likes.count()}",
+    }
+
+    async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
