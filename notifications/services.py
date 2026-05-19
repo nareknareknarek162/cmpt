@@ -45,7 +45,7 @@ def notify_photo_deleted(photo):
     message = {
         "type": "photo_inform",
         "text": f"Фотография {photo.title} была отправлена на удаление. "
-                f"Ваши комментарии к фотографии скоро будут удалены",
+        f"Ваши комментарии к фотографии скоро будут удалены",
     }
 
     async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)

@@ -57,15 +57,7 @@
     <div class="row" id="photos">
     </div>
 </div>
-<script>
-    let access_token = localStorage.getItem("access_token");
-    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/notifications/?token=${access_token}`);
-
-    socket.onmessage = (event) => {
-        console.log("message from server:", event.data);
-        alert(event.data);
-    };
-</script>
+<script src="{% static 'js/notifications.js' %}"></script>
 {% load static %}
 <script type="module" src="{% static 'js/account.js' %}"></script>
 </body>
