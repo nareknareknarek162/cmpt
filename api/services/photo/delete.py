@@ -7,7 +7,8 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from api.tasks import delete_photo_task
-from models_app.models import Photo, User
+from models_app.models import Comment, Photo, User
+from notifications.services import notify_photo_deleted
 
 
 class PhotoDeleteService(ServiceWithResult):
@@ -25,6 +26,15 @@ class PhotoDeleteService(ServiceWithResult):
         photo = self._photo
         photo.flow.delete()
         delete_photo_task.apply_async(args=[self.cleaned_data["id"]], countdown=90)
+
+        users = (
+            Comment.objects.filter(photo=photo)
+            .exclude(author=photo.author)
+            .values_list("author_id", flat=True)
+            .distinct()
+        )
+        for _ in users:
+            notify_photo_deleted(photo)
 
         return photo
 
