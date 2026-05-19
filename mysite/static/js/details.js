@@ -277,7 +277,9 @@ if (username) {
     const container = document.getElementById("authentication");
 
     container.innerHTML = `
+    <a href="/">
     <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
+    </a>
     <a href="/account/" class="me-3">
         <button class="btn btn-primary">Личный кабинет</button>
     </a>

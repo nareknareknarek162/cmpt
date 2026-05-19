@@ -57,8 +57,10 @@
     <div class="row" id="photos">
     </div>
 </div>
-<script src="{% static 'js/notifications.js' %}"></script>
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+</div>
 {% load static %}
+<script src="{% static 'js/notifications.js' %}"></script>
 <script type="module" src="{% static 'js/account.js' %}"></script>
 </body>
 </html>
