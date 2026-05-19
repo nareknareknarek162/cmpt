@@ -12,8 +12,8 @@ from models_app.models import Photo, User
 
 class PhotoUpdateService(ServiceWithResult):
     id = forms.IntegerField(required=True)
-    title = forms.CharField(required=True, min_length=1, max_length=127)
-    description = forms.CharField(required=True, min_length=1, max_length=511)
+    title = forms.CharField(required=False, min_length=1, max_length=127)
+    description = forms.CharField(required=False, min_length=1, max_length=511)
     image = forms.ImageField(required=False)
     restore = forms.BooleanField(required=False)
     user = ModelField(User)
