@@ -48,3 +48,7 @@ class Flow:
     )
     def edit(self):
         pass
+
+    @state.transition(source=State.ON_DELETE, target=State.APPROVED)
+    def restore(self):
+        pass

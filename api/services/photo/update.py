@@ -15,6 +15,7 @@ class PhotoUpdateService(ServiceWithResult):
     title = forms.CharField(required=True, min_length=1, max_length=127)
     description = forms.CharField(required=True, min_length=1, max_length=511)
     image = forms.ImageField(required=False)
+    restore = forms.BooleanField(required=False)
     user = ModelField(User)
 
     custom_validations = ["_validate_photo_exist", "_validate_author"]
@@ -27,6 +28,14 @@ class PhotoUpdateService(ServiceWithResult):
 
     def _update_photo(self):
         photo = self._photo
+
+        restore = self.cleaned_data.get("restore")
+
+        if restore:
+            photo.flow.restore()
+            photo.save()
+            return photo
+
         for field in ("title", "description", "image"):
             value = self.cleaned_data.get(field)
             if value not in (None, ""):

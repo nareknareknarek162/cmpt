@@ -134,7 +134,7 @@ function renderComment(comment, depth = 0) {
 
         <ul class="dropdown-menu dropdown-menu-end">
             <li>
-                <button 
+                <button
                     class="dropdown-item edit-comment"
                     data-id="${comment.id}"
                     data-bs-toggle="modal"
@@ -145,7 +145,7 @@ function renderComment(comment, depth = 0) {
             </li>
 
             ${canDelete ? `<li>
-                        <button 
+                        <button
                             class="dropdown-item text-danger delete-comment"
                             data-id="${comment.id}"
                         >

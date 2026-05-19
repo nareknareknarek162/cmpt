@@ -33,7 +33,7 @@ function fetchPhotos(state="approved") {
     const dropdown =
         state === "on_delete" ?
         `<ul class="dropdown-menu">
-            <a href="/photo/restore/${photo.id}" class="dropdown-item">
+            <a href="/photo/restore/${photo.id}/" class="dropdown-item">
                 Восстановить
             </a>
         </ul>`:
