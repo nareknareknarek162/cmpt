@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 def notify_photo_state_changed(photo):
     channel_layer = get_channel_layer()
 
-    message = {"type": "photo_state", "text": f"Ваша фотография была {photo.state}"}
+    message = {"type": "photo_inform", "text": f"Ваша фотография была {photo.state}"}
 
     async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
 
@@ -19,9 +19,22 @@ def notify_photo_liked(photo, username, action):
     }
 
     message = {
-        "type": "photo_like",
+        "type": "photo_inform",
         "text": f"{username} {actions[action]} фотографию {photo.title}. "
         f"Текущее количество голосов: {photo.likes.count()}",
     }
 
     async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
+
+
+def notify_photo_commented(photo, username):
+    channel_layer = get_channel_layer()
+
+    message = {
+        "type": "photo_inform",
+        "text": f"{username} прокомментировал(а) фотографию {photo.title}. "
+        f"Текущее количество комментариев: {photo.comments.count()}",
+    }
+
+    async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
+

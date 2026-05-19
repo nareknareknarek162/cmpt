@@ -7,6 +7,7 @@ from service_objects.fields import ModelField
 from service_objects.services import ServiceWithResult
 
 from models_app.models import Comment, Photo, User
+from notifications.services import notify_photo_commented
 
 
 class CommentCreateService(ServiceWithResult):
@@ -21,6 +22,7 @@ class CommentCreateService(ServiceWithResult):
         self.run_custom_validations()
         if self.is_valid():
             self.result = self._create_comment()
+            notify_photo_commented(self._photo, self.cleaned_data["author"].username)
         return self
 
     def _create_comment(self):

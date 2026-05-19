@@ -20,8 +20,5 @@ class NotificationsConsumer(WebsocketConsumer):
             self.group_name, self.channel_name
         )
 
-    def photo_state(self, event):
-        self.send(text_data=event["text"])
-
-    def photo_like(self, event):
+    def photo_inform(self, event):
         self.send(text_data=event["text"])
