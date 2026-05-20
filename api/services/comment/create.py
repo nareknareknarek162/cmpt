@@ -51,7 +51,7 @@ class CommentCreateService(ServiceWithResult):
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _validate_photo_approved(self):
-        if not self._photo and self._photo.state != "approved":
+        if self._photo and self._photo.state != "approved":
             self.add_error(
                 "state",
                 ValidationError(
