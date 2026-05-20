@@ -124,9 +124,9 @@ function renderComment(comment, depth = 0) {
     let html = "";
     let dropdown = "";
     if (isAuthor) {
-    const canDelete = !comment.children || comment.children.length === 0;
+        const canDelete = !comment.children || comment.children.length === 0;
 
-    dropdown = `
+        dropdown = `
     <div class="dropdown position-absolute top-0 end-0 m-2">
         <button class="btn btn-sm text-muted p-0" data-bs-toggle="dropdown" style="width: 32px; height: 32px;">
             <i class="bi bi-three-dots-vertical fs-5"></i>
@@ -134,15 +134,11 @@ function renderComment(comment, depth = 0) {
 
         <ul class="dropdown-menu dropdown-menu-end">
             <li>
-                <button
-                    class="dropdown-item edit-comment"
-                    data-id="${comment.id}"
-                    data-bs-toggle="modal"
-                    data-bs-target="#myModal"
-                >
+                <button class="dropdown-item edit-comment" data-id="${comment.id}">
                     Редактировать
                 </button>
             </li>
+
 
             ${canDelete ? `<li>
                         <button
@@ -164,7 +160,7 @@ function renderComment(comment, depth = 0) {
                 <h6 class="card-subtitle mb-1 text-muted">
                     ${comment.author} | ${comment.created_at}
                 </h6>
-                <p class="card-text">${comment.text}</p>
+                <p class="card-text comment-text">${comment.text}</p>
             </div>
 
             <div class="d-flex justify-content-end">
@@ -317,6 +313,61 @@ document.addEventListener('click', (event) => {
     }
     if (event.target.closest(".reply-comment")) {
         replyTo = event.target.closest(".reply-comment").dataset.id;
+    }
+
+    const editBtn = event.target.closest('.edit-comment');
+    if (editBtn) {
+        const commentId = editBtn.dataset.id;
+        const card = document.getElementById(commentId);
+        const textElement = card.querySelector(".comment-text");
+
+        if (!card.querySelector(".edit-form")) {
+            const oldText = textElement.innerText;
+            textElement.style.display = "none";
+
+            const editForm = document.createElement("div");
+            editForm.className = "edit-form mt-2";
+            editForm.innerHTML = `
+                <textarea class="form-control form-control-sm mb-1">${oldText}</textarea>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-primary save-edit" data-id="${commentId}">Сохранить</button>
+                    <button class="btn btn-sm btn-secondary cancel-edit">Отмена</button>
+                </div>
+            `;
+            textElement.after(editForm);
+        }
+    }
+
+    const cancelBtn = event.target.closest('.cancel-edit');
+    if (cancelBtn) {
+        const card = cancelBtn.closest(".card");
+        card.querySelector(".comment-text").style.display = "block";
+        card.querySelector(".edit-form").remove();
+    }
+
+    const saveBtn = event.target.closest('.save-edit');
+    if (saveBtn) {
+        const commentId = saveBtn.dataset.id;
+        const card = document.getElementById(commentId);
+        const newText = card.querySelector(".edit-form textarea").value;
+
+        fetch(`http://127.0.0.1:8000/api/comment/${commentId}/`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`
+            },
+            body: JSON.stringify({text: newText})
+        })
+            .then(res => {
+                if (res.ok) {
+                    const textElement = card.querySelector(".comment-text");
+                    textElement.innerText = newText;
+                    textElement.style.display = "block";
+                    card.querySelector(".edit-form").remove();
+                }
+            })
+            .catch(err => console.error(err));
     }
 });
 
