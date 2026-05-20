@@ -16,7 +16,7 @@ class CommentCreateService(ServiceWithResult):
     text = forms.CharField(required=True, min_length=2)
     parent_comment = forms.IntegerField(required=False, min_value=1)
 
-    custom_validations = ["_validate_photo_exist"]
+    custom_validations = ["_validate_photo_exist", ""]
 
     def process(self):
         self.run_custom_validations()
@@ -49,3 +49,13 @@ class CommentCreateService(ServiceWithResult):
                 "photo", ValidationError(message="Запрошенной фотографии не существует")
             )
             self.response_status = status.HTTP_404_NOT_FOUND
+
+    def _validate_photo_approved(self):
+        if not self._photo and self._photo.state != "approved":
+            self.add_error(
+                "state",
+                ValidationError(
+                    message="Комментировать неопубликованную фотографию запрещено"
+                ),
+            )
+            self.response_status = status.HTTP_403_FORBIDDEN
