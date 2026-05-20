@@ -16,7 +16,7 @@ class CommentCreateService(ServiceWithResult):
     text = forms.CharField(required=True, min_length=2)
     parent_comment = forms.IntegerField(required=False, min_value=1)
 
-    custom_validations = ["_validate_photo_exist", ""]
+    custom_validations = ["_validate_photo_exist", "_validate_photo_approved"]
 
     def process(self):
         self.run_custom_validations()

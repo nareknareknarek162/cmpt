@@ -46,7 +46,13 @@ class RetrieveCommentView(APIView):
 class CommentListView(APIView):
     @extend_schema(**SHOW_COMMENTS_LIST)
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CommentShowListService, {"id": kwargs["id"]})
+        outcome = ServiceOutcome(
+            CommentShowListService,
+            {
+                "id": kwargs["id"],
+                "user": request.user if request.user.is_authenticated else None,
+            },
+        )
         return Response(
             CommentShowSerializer(outcome.result, many=True).data,
             status=status.HTTP_200_OK,
