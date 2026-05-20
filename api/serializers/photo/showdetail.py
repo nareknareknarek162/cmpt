@@ -6,7 +6,7 @@ from models_app.models import Photo
 
 class PhotoShowDetailSerializer(ModelSerializer):
     author = serializers.CharField(source="author.username")
-    publication_date = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
+    publication_date = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
     image_detail = serializers.SerializerMethodField()
 
     class Meta:

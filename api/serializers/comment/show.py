@@ -6,8 +6,8 @@ from models_app.models import Comment
 
 class CommentShowSerializer(ModelSerializer):
     author = serializers.CharField(source="author.username")
-    created_at = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
-    updated_at = serializers.DateTimeField(format="%m-%d-%Y %H:%M")
+    created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    updated_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
     children = serializers.SerializerMethodField()
 
     class Meta:
