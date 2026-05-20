@@ -32,7 +32,10 @@ class RetrieveCommentView(APIView):
 
     @extend_schema(**PATCH_COMMENT)
     def patch(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CommentUpdateService, {"id": kwargs["id"]})
+        outcome = ServiceOutcome(
+            CommentUpdateService,
+            {"id": kwargs["id"], "user": request.user} | request.data,
+        )
         return Response(
             CommentShowSerializer(outcome.result).data, status=status.HTTP_200_OK
         )

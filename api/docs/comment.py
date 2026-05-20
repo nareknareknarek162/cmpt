@@ -1,4 +1,5 @@
 from api.serializers.comment.create import CommentCreateSerializer
+from api.serializers.comment.modify import CommentModifySerializer
 from api.serializers.comment.show import CommentShowSerializer
 from utils.docs_typed_dict import DocsDict
 
@@ -29,6 +30,6 @@ SHOW_COMMENTS_LIST: DocsDict = {
 PATCH_COMMENT: DocsDict = {
     "tags": ["comment"],
     "description": "Update comment by Id",
-    "request": CommentCreateSerializer,
+    "request": CommentModifySerializer,
     "responses": {200: CommentShowSerializer},
 }
