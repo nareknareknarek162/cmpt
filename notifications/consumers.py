@@ -1,24 +1,31 @@
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
-class NotificationsConsumer(WebsocketConsumer):
-    def connect(self):
+class NotificationsConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         user = self.scope["user"]
 
         if user.is_anonymous:
-            self.close()
+            await self.close()
             return
 
-        self.group_name = f"user_{user.id}"
+        self.user_group_name = f"user_{user.id}"
+        self.global_group_name = "global_notifications"
 
-        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
-        self.accept()
+        await self.channel_layer.group_add(self.user_group_name, self.channel_name)
+        await self.channel_layer.group_add(self.global_group_name, self.channel_name)
 
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.group_name, self.channel_name
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
+
+        await self.channel_layer.group_discard(
+            self.global_group_name, self.channel_name
         )
 
-    def photo_inform(self, event):
-        self.send(text_data=event["text"])
+    async def photo_inform(self, event):
+        await self.send(text_data=event["text"])
+
+    async def global_notification(self, event):
+        await self.send_json({"type": "global", "message": event["text"]})

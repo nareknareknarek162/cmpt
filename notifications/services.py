@@ -49,3 +49,11 @@ def notify_photo_deleted(photo):
     }
 
     async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
+
+
+def broadcast_message(message):
+    channel_layer = get_channel_layer()
+
+    async_to_sync(channel_layer.group_send)(
+        "global_notifications", {"type": "send_notification", "text": message}
+    )
