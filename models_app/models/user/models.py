@@ -16,7 +16,11 @@ class User(AbstractUser):
         verbose_name="Пол",
     )
 
-    profile_pic = models.ImageField(verbose_name="Фото профиля", blank=False, null=True)
+    avatar = models.ImageField(verbose_name="Фото профиля", blank=True, null=True)
+    avatar_thumbnail = ProcessedImageField(upload_to='avatars',
+                                           processors=[ResizeToFill(100, 50)],
+                                           format='JPEG',
+                                           options={'quality': 60})
 
     class Meta:
         db_table = "users"
