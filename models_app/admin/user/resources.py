@@ -1,8 +1,9 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.shortcuts import render
 from django.urls import path
 
 from models_app.models import User
+from notifications.services import broadcast_message
 
 
 @admin.register(User)
@@ -23,6 +24,13 @@ class UserAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def broadcast_view(self, request):
+        if request.method == "POST":
+            message = request.POST.get("message", "").strip()
+            if message:
+                broadcast_message(message)
+                messages.success(request, "Глобальное уведомление успешно отправлено!")
+            else:
+                messages.error(request, "Текст сообщения не может быть пустым.")
         return render(request, "admin/broadcast_message_page.html")
 
     list_display = ["username", "first_name", "last_name"]

@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 def notify_photo_state_changed(photo):
     channel_layer = get_channel_layer()
 
-    message = {"type": "nform", "text": f"Ваша фотография была {photo.state}"}
+    message = {"type": "inform", "text": f"Ваша фотография была {photo.state}"}
 
     async_to_sync(channel_layer.group_send)(f"user_{photo.author.id}", message)
 
