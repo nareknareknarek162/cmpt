@@ -2,6 +2,11 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 class NotificationsConsumer(AsyncWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_group_name = None
+        self.global_group_name = None
+
     async def connect(self):
         user = self.scope["user"]
 
@@ -18,14 +23,14 @@ class NotificationsConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
+        if self.user_group_name:
+            await self.channel_layer.group_discard(
+                self.user_group_name, self.channel_name
+            )
+        if self.global_group_name:
+            await self.channel_layer.group_discard(
+                self.global_group_name, self.channel_name
+            )
 
-        await self.channel_layer.group_discard(
-            self.global_group_name, self.channel_name
-        )
-
-    async def photo_inform(self, event):
+    async def inform(self, event):
         await self.send(text_data=event["text"])
-
-    async def global_notification(self, event):
-        await self.send_json({"type": "global", "message": event["text"]})
