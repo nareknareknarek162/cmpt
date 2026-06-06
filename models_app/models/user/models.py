@@ -21,7 +21,7 @@ class User(AbstractUser):
     avatar = models.ImageField(verbose_name="Фото профиля", blank=True, null=True)
     avatar_thumbnail = ImageSpecField(
         source="avatar",
-        processors=[ResizeToFill(100, 50)],
+        processors=[ResizeToFill(40, 40)],
         format="JPEG",
         options={"quality": 60},
     )

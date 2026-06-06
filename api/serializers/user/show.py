@@ -12,6 +12,7 @@ class UserShowSerializer(ModelSerializer):
         fields = [
             "id",
             "username",
+            "avatar",
             "avatar_thumbnail",
         ]
 

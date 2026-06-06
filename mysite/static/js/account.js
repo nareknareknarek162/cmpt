@@ -27,7 +27,7 @@ function fetchAvatar() {
         .then(data => {
             const element = document.getElementById("avatar");
             const avatar_path = data.avatar_thumbnail || "/static/images/user-default.png"
-            const html = `<img src=${avatar_path} alt="Аватар">`
+            const html = `<img src=${avatar_path} alt="Аватар" style="border-radius: 50%;">`
             element.innerHTML += html;
         })
         .catch(error => {

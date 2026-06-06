@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,7 +16,6 @@ from api.docs.user import (
 )
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.show import UserShowSerializer
-from api.services.permissions.IsOwner import IsOwner
 from api.services.user.create import UserCreateService
 from api.services.user.current import UserCurrentService
 from api.services.user.delete import UserDeleteService
@@ -25,7 +25,7 @@ from api.services.user.update import UserUpdateService
 
 
 class RetrieveUserView(APIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @extend_schema(**SHOW_USER)
     def get(self, request, *args, **kwargs):
@@ -39,15 +39,9 @@ class RetrieveUserView(APIView):
         ServiceOutcome(UserDeleteService, {"id": kwargs["id"]})
         return Response(None, status=status.HTTP_200_OK)
 
-    @extend_schema(**UPDATE_USER)
-    def patch(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(UserUpdateService, {"id": kwargs["id"]} | request.data)
-        return Response(
-            UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
-        )
-
 
 class UserListCreateView(APIView):
+    parser_classes = [MultiPartParser]
 
     @extend_schema(**SHOW_USER_LIST)
     def get(self, request, *args, **kwargs):
@@ -64,9 +58,21 @@ class UserListCreateView(APIView):
             UserCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
 
+    @extend_schema(**UPDATE_USER)
+    def patch(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(
+            UserUpdateService,
+            {"user": request.user if request.user.is_authenticated else None}
+            | request.data.dict(),
+            request.FILES,
+        )
+        return Response(
+            UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
+
 
 class RetrieveUserTokenView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(**SHOW_USER_BY_TOKEN)
     def get(self, request, *args, **kwargs):

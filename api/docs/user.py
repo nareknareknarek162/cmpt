@@ -1,6 +1,8 @@
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.delete import UserDeleteSerializer
+from api.serializers.user.modify import UserModifySerializer
 from api.serializers.user.show import UserShowSerializer
+from api.serializers.user.showdetail import UserShowDetailSerializer
 from utils.docs_typed_dict import DocsDict
 
 SHOW_USER: DocsDict = {
@@ -19,13 +21,13 @@ CREATE_USER: DocsDict = {
     "tags": ["user"],
     "description": "Create User",
     "request": UserCreateSerializer,
-    "responses": {201: UserShowSerializer},
+    "responses": {201: UserShowDetailSerializer},
 }
 
 UPDATE_USER: DocsDict = {
     "tags": ["user"],
     "description": "Update User by Id",
-    "request": UserCreateSerializer,
+    "request": UserModifySerializer,
     "responses": {200: UserShowSerializer},
 }
 
