@@ -26,6 +26,7 @@ function fetchAvatar() {
         })
         .then(data => {
             const element = document.getElementById("avatar");
+            element.innerHTML = "";
             const avatar_path = data.avatar_thumbnail || "/static/images/user-default.png"
             const html = `<img src=${avatar_path} alt="Аватар" style="border-radius: 50%;">`
             element.innerHTML += html;
@@ -66,7 +67,7 @@ function fetchPhotos(state = "approved") {
                 </button>
             </li>
         </ul>` :
-        `<ul class="dropdown-menu">
+                        `<ul class="dropdown-menu">
            <li>
               <a href="/photos/edit/${photo.id}" class="dropdown-item">
               Редактировать
@@ -195,4 +196,28 @@ document.addEventListener('click', async (event) => {
 select.addEventListener("change", (e) => {
     const status = e.target.value;
     fetchPhotos(status);
+});
+
+const avatarInput = document.getElementById('avatar-input');
+avatarInput.addEventListener('change', function (event) {
+    const new_avatar = event.target.files[0];
+
+    if (new_avatar) {
+        const formData = new FormData();
+        formData.append('avatar', new_avatar);
+
+        fetch(`http://127.0.0.1:8000/api/user/`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${access_token}`
+            },
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(response.statusText);
+                return response.json();
+            })
+            .then(() => fetchAvatar())
+            .catch(error => console.error(error));
+    }
 });
