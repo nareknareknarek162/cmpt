@@ -6,19 +6,19 @@ from models_app.models import User
 
 class UserUpdateService(ServiceWithResult):
     id = forms.IntegerField(required=True)
-    username = forms.CharField()
-    first_name = forms.CharField()
-    last_name = forms.CharField()
+    username = forms.CharField(min_length=2, max_length=20)
+    first_name = forms.CharField(min_length=1, max_length=30)
+    last_name = forms.CharField(min_length=1, max_length=30)
     email = forms.EmailField()
     birth_date = forms.DateField()
     password = forms.CharField()
     gender = forms.ChoiceField(choices=[("M", "Мужской"), ("F", "Женский")])
 
     def process(self):
-        self.result = self._update_photo()
+        self.result = self._update_user()
         return self
 
-    def _update_photo(self):
+    def _update_user(self):
         user = User.objects.get(id=self.cleaned_data["id"])
         user.username = self.cleaned_data["username"]
         user.first_name = self.cleaned_data["first_name"]

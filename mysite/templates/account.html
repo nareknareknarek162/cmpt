@@ -11,19 +11,23 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Competition</a>
         <div class="d-flex align-items-center gap-2" id="authentication">
-         <a href="/">
-             <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
-         </a>
+            <a href="/">
+                <button type="submit" class="btn btn-danger" id="logoutBtn">Выйти</button>
+            </a>
             <a href="{% url 'index' %}" class="me-3">
                 <button class="btn btn-primary">На главную</button>
             </a>
             <div class="border-start ps-3 fs-5 text-success" id="username"></div>
+            <label style="cursor: pointer;">
+                <input type="file" accept="image/*" class="d-none">
+                <div id="avatar" style="pointer-events: none;"></div>
+            </label>
         </div>
     </div>
 </nav>
 <div class="container mb-4">
     <h5 class="mb-3">
-    Добавить фото
+        Добавить фото
         <span id="token" style="
           float:right;
           max-width: 300px;
@@ -32,7 +36,7 @@
         "></span>
     </h5>
     <div class="card p-4 shadow-sm border-0 d-flex flex-row justify-content-between align-items-center">
-    <a href="{% url 'add-photo' %}">
+        <a href="{% url 'add-photo' %}">
             <button class="btn btn-primary rounded-pill px-4 py-2">
                 Загрузить фото
             </button>
@@ -45,12 +49,12 @@
     </div>
 </div>
 <div class="d-flex justify-content-end pe-5">
-  <select class="form-select w-auto" id="state">
-    <option value="approved">Опубликованные фото</option>
-    <option value="on_moderation">На модерации</option>
-    <option value="rejected">Отклонённые</option>
-    <option value="on_delete">Фото к удалению</option>
-  </select>
+    <select class="form-select w-auto" id="state">
+        <option value="approved">Опубликованные фото</option>
+        <option value="on_moderation">На модерации</option>
+        <option value="rejected">Отклонённые</option>
+        <option value="on_delete">Фото к удалению</option>
+    </select>
 </div>
 <div class="container mb-4">
     <h5 class="mb-3">Мои фотографии</h5>

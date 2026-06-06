@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from service_objects.services import ServiceOutcome
@@ -15,16 +15,17 @@ from api.docs.user import (
 )
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.show import UserShowSerializer
+from api.services.permissions.IsOwner import IsOwner
 from api.services.user.create import UserCreateService
+from api.services.user.current import UserCurrentService
 from api.services.user.delete import UserDeleteService
 from api.services.user.show import UserShowService
 from api.services.user.showlist import UserListShowService
-from api.services.user.tokenshow import UserTokenShowService
 from api.services.user.update import UserUpdateService
 
 
 class RetrieveUserView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwner]
 
     @extend_schema(**SHOW_USER)
     def get(self, request, *args, **kwargs):
@@ -35,7 +36,6 @@ class RetrieveUserView(APIView):
 
     @extend_schema(**DELETE_USER)
     def delete(self, request, *args, **kwargs):
-
         ServiceOutcome(UserDeleteService, {"id": kwargs["id"]})
         return Response(None, status=status.HTTP_200_OK)
 
@@ -70,7 +70,7 @@ class RetrieveUserTokenView(APIView):
 
     @extend_schema(**SHOW_USER_BY_TOKEN)
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(UserTokenShowService, {"user": request.user})
+        outcome = ServiceOutcome(UserCurrentService, {"user": request.user})
         return Response(
             UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
         )

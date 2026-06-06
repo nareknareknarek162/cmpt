@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from imagekit.models import ImageSpecField
+from pilkit.processors import ResizeToFill
 
 
 class User(AbstractUser):
@@ -17,10 +19,12 @@ class User(AbstractUser):
     )
 
     avatar = models.ImageField(verbose_name="Фото профиля", blank=True, null=True)
-    avatar_thumbnail = ProcessedImageField(upload_to='avatars',
-                                           processors=[ResizeToFill(100, 50)],
-                                           format='JPEG',
-                                           options={'quality': 60})
+    avatar_thumbnail = ImageSpecField(
+        source="avatar",
+        processors=[ResizeToFill(100, 50)],
+        format="JPEG",
+        options={"quality": 60},
+    )
 
     class Meta:
         db_table = "users"

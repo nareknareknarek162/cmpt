@@ -8,6 +8,33 @@ if (username) {
     container.innerHTML = `${username}`;
 }
 
+function fetchAvatar() {
+    const apiURL = `http://127.0.0.1:8000/api/user/current/`;
+    let access_token = localStorage.getItem("access_token");
+
+    fetch(apiURL, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const element = document.getElementById("avatar");
+            const avatar_path = data.avatar_thumbnail || "/static/images/user-default.png"
+            const html = `<img src=${avatar_path} alt="Аватар">`
+            element.innerHTML += html;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
 function fetchPhotos(state = "approved") {
     const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
     let access_token = localStorage.getItem("access_token");
@@ -104,6 +131,7 @@ function deletePhoto(photoId) {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchPhotos();
+    fetchAvatar();
 });
 
 document.addEventListener('click', async (event) => {
