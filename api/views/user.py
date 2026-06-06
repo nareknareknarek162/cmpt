@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.decorators import parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -41,7 +42,6 @@ class RetrieveUserView(APIView):
 
 
 class UserListCreateView(APIView):
-    parser_classes = [MultiPartParser]
 
     @extend_schema(**SHOW_USER_LIST)
     def get(self, request, *args, **kwargs):
@@ -58,6 +58,18 @@ class UserListCreateView(APIView):
             UserCreateSerializer(outcome.result).data, status=status.HTTP_201_CREATED
         )
 
+
+class RetrieveUserTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(**SHOW_USER_BY_TOKEN)
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(UserCurrentService, {"user": request.user})
+        return Response(
+            UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
+        )
+
+    @parser_classes([MultiPartParser])
     @extend_schema(**UPDATE_USER)
     def patch(self, request, *args, **kwargs):
         outcome = ServiceOutcome(
@@ -66,17 +78,6 @@ class UserListCreateView(APIView):
             | request.data.dict(),
             request.FILES,
         )
-        return Response(
-            UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
-        )
-
-
-class RetrieveUserTokenView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @extend_schema(**SHOW_USER_BY_TOKEN)
-    def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(UserCurrentService, {"user": request.user})
         return Response(
             UserShowSerializer(outcome.result).data, status=status.HTTP_200_OK
         )

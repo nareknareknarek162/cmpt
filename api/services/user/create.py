@@ -1,4 +1,7 @@
 from django import forms
+from django.utils import timezone
+from rest_framework import status
+from service_objects.errors import ValidationError
 from service_objects.services import ServiceWithResult
 
 from models_app.models import User
@@ -15,8 +18,12 @@ class UserCreateService(ServiceWithResult):
         required=True, choices=[("M", "Мужской"), ("F", "Женский")]
     )
 
+    custom_validations = ["_validate_birth_date"]
+
     def process(self):
-        self.result = self._create_user()
+        self.run_custom_validations()
+        if self.is_valid():
+            self.result = self._create_user()
         return self
 
     def _create_user(self):
@@ -34,3 +41,11 @@ class UserCreateService(ServiceWithResult):
         user.save()
 
         return user
+
+    def _validate_birth_date(self):
+        if self.cleaned_data["birth_date"] > timezone.now().date():
+            self.add_error(
+                "birth_date",
+                ValidationError(message="Дата рождения не может быть в будущем"),
+            )
+            self.response_status = status.HTTP_400_BAD_REQUEST

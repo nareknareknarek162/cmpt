@@ -206,7 +206,7 @@ avatarInput.addEventListener('change', function (event) {
         const formData = new FormData();
         formData.append('avatar', new_avatar);
 
-        fetch(`http://127.0.0.1:8000/api/user/`, {
+        fetch(`http://127.0.0.1:8000/api/user/current/`, {
             method: "PATCH",
             headers: {
                 "Authorization": `Bearer ${access_token}`
