@@ -153,12 +153,17 @@ function renderComment(comment, depth = 0) {
     `;
     }
 
+    let redacted = "";
+    if (comment.updated_at !== comment.created_at) {
+        redacted = " (ред.)"
+    }
+
     html += `
           <div class="card mb-1 mt-2" style="margin-left: ${depth * 50}px" id="${comment.id}">
             <div class="card-body position-relative pe-5">
                 ${dropdown}
                 <h6 class="card-subtitle mb-1 text-muted">
-                    ${comment.author} | ${comment.created_at}
+                    ${comment.author} | ${comment.updated_at + redacted}
                 </h6>
                 <p class="card-text comment-text">${comment.text}</p>
             </div>
@@ -190,6 +195,7 @@ function fetchComments() {
     })
         .then(response => response.json())
         .then(data => {
+            document.getElementById("comment-count").textContent = data.length;
             data.forEach(comment => {
                 renderComment(comment);
             });
@@ -359,13 +365,19 @@ document.addEventListener('click', (event) => {
             },
             body: JSON.stringify({text: newText})
         })
-            .then(res => {
-                if (res.ok) {
-                    const textElement = card.querySelector(".comment-text");
-                    textElement.innerText = newText;
-                    textElement.style.display = "block";
-                    card.querySelector(".edit-form").remove();
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
                 }
+                return response.json();
+            })
+            .then(comment => {
+                const textElement = card.querySelector(".comment-text");
+                textElement.innerText = newText;
+                const timeElement = card.querySelector(".card-subtitle");
+                timeElement.innerText = `${comment.author} | ${comment.updated_at} (ред.) `
+                textElement.style.display = "block";
+                card.querySelector(".edit-form").remove();
             })
             .catch(err => console.error(err));
     }

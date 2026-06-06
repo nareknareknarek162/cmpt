@@ -4,7 +4,6 @@ from django.utils.html import format_html
 from viewflow.fsm import TransitionNotAllowed
 
 from models_app.models import Photo
-from models_app.models.photo.fsm import State
 from notifications.services import notify_photo_state_changed
 
 
@@ -51,6 +50,7 @@ class PhotoAdmin(admin.ModelAdmin):
         "author",
         "title",
         "description",
+        "state",
     ]
 
     list_display = ["title", "state", "publication_date", "author"]
@@ -75,28 +75,8 @@ class PhotoAdmin(admin.ModelAdmin):
                 obj.previous_image.url,
             )
 
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
-        if db_field.name == "state":
-            id = request.resolver_match.kwargs.get("object_id")
-            if not id:
-                return super().formfield_for_choice_field(db_field, request, **kwargs)
-
-            try:
-                pic = Photo.objects.get(pk=id)
-            except Photo.DoesNotExist:
-                return super().formfield_for_choice_field(db_field, request, **kwargs)
-
-            if pic.state == State.ON_MODERATION:
-                kwargs["choices"] = [
-                    (State.APPROVED, "Approved"),
-                    (State.REJECTED, "Rejected"),
-                ]
-            elif pic.state == State.APPROVED:
-                kwargs["choices"] = [
-                    (State.REJECTED, "Rejected"),
-                    (State.ON_MODERATION, "On Moderation"),
-                ]
-            return super().formfield_for_choice_field(db_field, request, **kwargs)
-
     def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
