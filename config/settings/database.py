@@ -11,7 +11,7 @@ DATABASES = {
         "NAME": env("DB_NAME", cast=str),
         "USER": env("DB_USER", cast=str),
         "PASSWORD": env("DB_PASSWORD", cast=str),
-        "HOST": "localhost",
+        "HOST": env("DB_HOST", cast=str),
         "PORT": "5432",
     }
 }
