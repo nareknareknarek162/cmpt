@@ -1,7 +1,7 @@
 const username = localStorage.getItem("username");
 
 function fetchPhotos(page=1) {
-    const apiURL = 'http://127.0.0.1:8000/api/photo/';
+    const apiURL = '/api/photo/';
 
     const form = document.getElementById("photo-form");
 

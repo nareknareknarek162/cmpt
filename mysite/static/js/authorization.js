@@ -1,5 +1,5 @@
 export function authorizeUser(username, password) {
-    const apiURL = 'http://127.0.0.1:8000/api/token/';
+    const apiURL = '/api/token/';
 
     fetch(apiURL, {
             method: "POST",
@@ -21,7 +21,7 @@ export function authorizeUser(username, password) {
             localStorage.setItem("access_token", data.access);
             localStorage.setItem("refresh_token", data.refresh);
             localStorage.setItem("username", username);
-            window.location.replace('http://127.0.0.1:8000/account/');
+            window.location.replace('/account/');
         })
         .catch(error => {
             const container = document.getElementById('dataContainer');

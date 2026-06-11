@@ -1,5 +1,5 @@
 function populatePhoto(photoId) {
-    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    const apiURL = `/api/photo/${photoId}/`;
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
@@ -26,7 +26,7 @@ function populatePhoto(photoId) {
 }
 
 function updatePhoto(photoId) {
-    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    const apiURL = `/api/photo/${photoId}/`;
     let access_token = localStorage.getItem("access_token");
 
     const photoData = new FormData();
@@ -48,7 +48,7 @@ function updatePhoto(photoId) {
             return response.json();
         })
         .then(data => {
-            window.location.replace('http://127.0.0.1:8000/account/');
+            window.location.replace('/account/');
         })
         .catch(error => {
 

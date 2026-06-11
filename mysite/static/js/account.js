@@ -9,7 +9,7 @@ if (username) {
 }
 
 function fetchAvatar() {
-    const apiURL = `http://127.0.0.1:8000/api/user/current/`;
+    const apiURL = `/api/user/current/`;
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
@@ -37,7 +37,7 @@ function fetchAvatar() {
 }
 
 function fetchPhotos(state = "approved") {
-    const apiURL = 'http://127.0.0.1:8000/api/photo/?mine=true';
+    const apiURL = '/api/photo/?mine=true';
     let access_token = localStorage.getItem("access_token");
 
     fetch(`${apiURL}&state=${state}`, {
@@ -84,7 +84,7 @@ function fetchPhotos(state = "approved") {
                 const html = `
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
-            <a href="http://127.0.0.1:8000/photo/${photo.id}/">
+            <a href="photo/${photo.id}/">
             <img alt="${photo.description}" src="${photo.image_preview}"
                  title="${photo.description}"
                  class="img-fluid rounded">
@@ -107,7 +107,7 @@ function fetchPhotos(state = "approved") {
 }
 
 function deletePhoto(photoId) {
-    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    const apiURL = `/api/photo/${photoId}/`;
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
@@ -163,7 +163,7 @@ document.addEventListener('click', async (event) => {
     }
     if (event.target.matches('#restoreBtn')) {
         const photoId = event.target.dataset.id;
-        const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+        const apiURL = `/api/photo/${photoId}/`;
         let access_token = localStorage.getItem("access_token");
 
         const data = new FormData();
@@ -206,7 +206,7 @@ avatarInput.addEventListener('change', function (event) {
         const formData = new FormData();
         formData.append('avatar', new_avatar);
 
-        fetch(`http://127.0.0.1:8000/api/user/current/`, {
+        fetch(`/api/user/current/`, {
             method: "PATCH",
             headers: {
                 "Authorization": `Bearer ${access_token}`

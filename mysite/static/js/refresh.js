@@ -1,5 +1,5 @@
 export function refreshToken(refresh_token) {
-const apiURL = 'http://127.0.0.1:8000/api/token/refresh/';
+const apiURL = '/api/token/refresh/';
 
     fetch(apiURL, {
             method: "POST",

@@ -1,6 +1,9 @@
 let access_token = localStorage.getItem("access_token");
 if (access_token) {
-    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/notifications/?token=${access_token}`);
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+
+    const socket = new WebSocket(
+    `${protocol}//${window.location.host}/ws/notifications/?token=${access_token}`);
 
     function showNotification(message) {
         const toastElement = document.createElement("div");
@@ -41,7 +44,7 @@ if (access_token) {
 
         showNotification(event.data);
     };
-    
+
     document.getElementById("logoutBtn").addEventListener("click", function () {
         socket.close();
     });

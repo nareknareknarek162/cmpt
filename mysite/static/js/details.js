@@ -2,7 +2,7 @@ const username = localStorage.getItem("username");
 
 function fetchPhoto() {
     const photoId = window.location.pathname.split("/")[2];
-    const apiURL = `http://127.0.0.1:8000/api/photo/${photoId}/`;
+    const apiURL = `/api/photo/${photoId}/`;
     let access_token = localStorage.getItem("access_token");
     const headers = {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ function fetchPhoto() {
 
 function fetchLikes() {
     const id = window.location.pathname.split("/")[2];
-    const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/list/`;
+    const apiURL = `/api/like/photo/${id}/list/`;
 
     let access_token = localStorage.getItem("access_token");
     const headers = {
@@ -80,7 +80,7 @@ function fetchLikes() {
 
 function toggleLike() {
     const id = window.location.pathname.split("/")[2];
-    const apiURL = `http://127.0.0.1:8000/api/like/photo/${id}/`;
+    const apiURL = `/api/like/photo/${id}/`;
 
     const button = document.getElementById("like_button");
     let httpMethod = button.dataset.method
@@ -188,7 +188,7 @@ function renderComment(comment, depth = 0) {
 
 function fetchComments() {
     const id = window.location.pathname.split("/")[2];
-    const apiURL = `http://127.0.0.1:8000/api/comment/photo/${id}/list/`;
+    const apiURL = `/api/comment/photo/${id}/list/`;
 
     fetch(apiURL, {
         method: "GET"
@@ -204,7 +204,7 @@ function fetchComments() {
 }
 
 function deletePhoto(commentId) {
-    const apiURL = `http://127.0.0.1:8000/api/comment/${commentId}/`;
+    const apiURL = `/api/comment/${commentId}/`;
     let access_token = localStorage.getItem("access_token");
 
     fetch(apiURL, {
@@ -230,7 +230,7 @@ function deletePhoto(commentId) {
 
 function sendComment(parentCommentId = null) {
     const photoId = window.location.pathname.split("/")[2];
-    const apiURL = `http://127.0.0.1:8000/api/comment/photo/${photoId}/`;
+    const apiURL = `/api/comment/photo/${photoId}/`;
 
     let comment_text = document.getElementById("comment_text").value;
     let access_token = localStorage.getItem("access_token");
@@ -357,7 +357,7 @@ document.addEventListener('click', (event) => {
         const card = document.getElementById(commentId);
         const newText = card.querySelector(".edit-form textarea").value;
 
-        fetch(`http://127.0.0.1:8000/api/comment/${commentId}/`, {
+        fetch(`/api/comment/${commentId}/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
