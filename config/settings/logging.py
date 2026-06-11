@@ -1,6 +1,10 @@
 import os
 
 from config.settings.django import BASE_DIR
+from pathlib import Path
+
+LOG_DIR = Path(BASE_DIR) / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 LOGGING = {
     "version": 1,
