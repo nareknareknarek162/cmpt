@@ -84,7 +84,7 @@ function fetchPhotos(state = "approved") {
                 const html = `
          <div class="col-6 col-md-4 mb-3">
           <div class="position-relative d-inline-block" id="${photo.id}">
-            <a href="photo/${photo.id}/">
+            <a href="/photo/${photo.id}/">
             <img alt="${photo.description}" src="${photo.image_preview}"
                  title="${photo.description}"
                  class="img-fluid rounded">
