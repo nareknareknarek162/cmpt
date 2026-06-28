@@ -25,3 +25,8 @@ class CommentShowSerializer(ModelSerializer):
 
     def get_children(self, obj):
         return CommentShowSerializer(getattr(obj, "children_list", []), many=True).data
+
+
+class CommentResponseSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    tree = CommentShowSerializer(many=True)

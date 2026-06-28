@@ -18,7 +18,7 @@ class CommentShowListService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self.result = self._build_tree()
+            self.result = {"count": len(self._comments()), "tree": self._build_tree()}
         return self
 
     def _comments(self):

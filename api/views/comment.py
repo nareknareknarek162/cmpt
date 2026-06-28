@@ -12,7 +12,10 @@ from api.docs.comment import (
     SHOW_COMMENT,
     SHOW_COMMENTS_LIST,
 )
-from api.serializers.comment.show import CommentShowSerializer
+from api.serializers.comment.show import (
+    CommentResponseSerializer,
+    CommentShowSerializer,
+)
 from api.services.comment.create import CommentCreateService
 from api.services.comment.delete import CommentDeleteService
 from api.services.comment.list import CommentShowListService
@@ -57,7 +60,7 @@ class CommentListView(APIView):
             },
         )
         return Response(
-            CommentShowSerializer(outcome.result, many=True).data,
+            CommentResponseSerializer(outcome.result).data,
             status=status.HTTP_200_OK,
         )
 
