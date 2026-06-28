@@ -203,7 +203,7 @@ function fetchComments() {
         .catch(error => console.error(error));
 }
 
-function deletePhoto(commentId) {
+function deleteComment(commentId) {
     const apiURL = `/api/comment/${commentId}/`;
     let access_token = localStorage.getItem("access_token");
 
@@ -221,6 +221,8 @@ function deletePhoto(commentId) {
         .then(() => {
             const element = document.getElementById(`${commentId}`);
             element.remove();
+            let el = document.getElementById("comment-count")
+            el.textContent = Number(el.textContent) - 1;
         })
         .catch(error => {
             console.error(error);
@@ -259,6 +261,8 @@ function sendComment(parentCommentId = null) {
         })
         .then(data => {
             renderComment(data);
+            let el = document.getElementById("comment-count")
+            el.textContent = Number(el.textContent) + 1;
         })
         .catch(error => {
             console.error(error);
@@ -309,8 +313,8 @@ document.addEventListener('click', (event) => {
             </a>`;
     }
     if (event.target.closest('.delete-comment')) {
-        const photoId = event.target.dataset.id;
-        deletePhoto(photoId);
+        const commentId = event.target.dataset.id;
+        deleteComment(commentId);
     }
     if (event.target.closest("#like_button")) {
         if (username) {
