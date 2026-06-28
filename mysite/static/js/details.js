@@ -195,8 +195,8 @@ function fetchComments() {
     })
         .then(response => response.json())
         .then(data => {
-            document.getElementById("comment-count").textContent = data.length;
-            data.forEach(comment => {
+            document.getElementById("comment-count").textContent = data["count"];
+            data["tree"].forEach(comment => {
                 renderComment(comment);
             });
         })
