@@ -13,8 +13,8 @@ from api.docs.photo import (
     SHOW_LIST_PHOTO,
     SHOW_PHOTO,
 )
+from api.serializers.photo.detail import PhotoShowDetailSerializer
 from api.serializers.photo.show import PhotoShowSerializer
-from api.serializers.photo.showdetail import PhotoShowDetailSerializer
 from api.services.photo.create import PhotoCreateService
 from api.services.photo.delete import PhotoDeleteService
 from api.services.photo.list import PhotoListShowService

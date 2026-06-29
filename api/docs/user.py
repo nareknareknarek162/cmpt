@@ -1,8 +1,8 @@
 from api.serializers.user.create import UserCreateSerializer
 from api.serializers.user.delete import UserDeleteSerializer
+from api.serializers.user.detail import UserShowDetailSerializer
 from api.serializers.user.modify import UserModifySerializer
 from api.serializers.user.show import UserShowSerializer
-from api.serializers.user.showdetail import UserShowDetailSerializer
 from utils.docs_typed_dict import DocsDict
 
 SHOW_USER: DocsDict = {

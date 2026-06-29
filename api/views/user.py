@@ -20,8 +20,8 @@ from api.serializers.user.show import UserShowSerializer
 from api.services.user.create import UserCreateService
 from api.services.user.current import UserCurrentService
 from api.services.user.delete import UserDeleteService
+from api.services.user.list import UserListShowService
 from api.services.user.show import UserShowService
-from api.services.user.showlist import UserListShowService
 from api.services.user.update import UserUpdateService
 
 

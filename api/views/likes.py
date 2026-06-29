@@ -10,7 +10,7 @@ from api.serializers.likes.create import LikeCreateSerializer
 from api.serializers.likes.show import LikesResponseSerializer
 from api.services.like.create import LikeCreateService
 from api.services.like.delete import LikeDeleteService
-from api.services.like.showlist import LikesShowService
+from api.services.like.list import LikesShowService
 
 
 class RetrieveListLikesView(APIView):
